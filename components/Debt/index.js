@@ -6,12 +6,12 @@ import { BackIcon, PlusIcon } from "../../components/Icons";
 import DebtForm from "./DebtForm";
 import DebtCard from "./DebtCard";
 import OverviewCard from "./OverviewCard";
-import DebtContext from "../../contexts/DebtContext";
+import MainContext from "../../contexts/MainContext";
 import AuthContext from "../../contexts/AuthContext";
 
 const DebtPage = () => {
   const [open, setOpen] = useState(false);
-  const { debts, loadingData } = useContext(DebtContext);
+  const { debts, loadingData } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
   const TabButton = ({ text }) => (
     <button className="items-center flex text-sm cursor-pointer pb-3 hover:text-violet-600 border-b-1  hover:border-b-violet-600">

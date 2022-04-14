@@ -1,6 +1,6 @@
 import { FieldValue, Firestore } from "firebase/firestore";
 import { useContext, useState } from "react";
-import DebtContext from "../../contexts/DebtContext";
+import MainContext from "../../contexts/MainContext";
 import useFormFields from "../../hooks/useFormFields";
 import InputField from "../Auth/InputField";
 import DatePicker from "react-date-picker/dist/entry.nostyle";
@@ -29,11 +29,10 @@ const DebtForm = ({
   };
   const { formFields, createChangeHandler } = useFormFields(initialValue);
   const [value, onChange] = useState(new Date());
-  const { addDebt } = useContext(DebtContext);
+  const { addDebt } = useContext(MainContext);
 
   const submitForm = () => {
-    console.log("Adding", {...formFields, dateOwed: moment(value).format('DD/MM/YYYY'),});
-    addDebt({...formFields, dateOwed: value});
+    addDebt({ ...formFields, dateOwed: value });
     closeAction();
   };
   return (
@@ -58,7 +57,7 @@ const DebtForm = ({
           onChange={createChangeHandler("amount")}
           placeholder="Enter the amount owed"
         />
-        
+
         <label className="font-semibold text-indigo-800 text-sm mb-4">
           Date
         </label>

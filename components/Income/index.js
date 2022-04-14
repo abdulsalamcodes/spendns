@@ -2,15 +2,15 @@ import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { BackIcon, PlusIcon } from "../../components/Icons";
 import AuthContext from "../../contexts/AuthContext";
-import DebtContext from "../../contexts/DebtContext";
+import MainContext from "../../contexts/MainContext";
 import IncomeChart from "../Charts.js/IncomeChart";
 import Modal from "../UI/Modal";
-import IncomeCard from "./IncomeCard";
+import ItemCard from "../ItemCard";
 import IncomeForm from "./IncomeForm";
 
 const IncomePage = () => {
   const [open, setOpen] = useState(false);
-  const { incomes, loadingData } = useContext(DebtContext);
+  const { incomes, loadingData } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
 
   return (
@@ -53,15 +53,24 @@ const IncomePage = () => {
           </div>
         </section>
 
-        {loading || loadingData ? (
-          <p className="text-center text-sm text-gray-600">Loading...</p>
-        ) : (
-          incomes
-            ?.sort(
-              (a, b) => parseFloat(b.date.seconds) - parseFloat(a.date.seconds)
-            )
-            .map((income) => <IncomeCard income={income} />)
-        )}
+        <main>
+          <h4 className="mb-4 text-lg">List of your income</h4>
+
+          {loading || loadingData ? (
+            <p className="text-center text-sm text-gray-600">Loading...</p>
+          ) : incomes?.length > 0 ? (
+            incomes
+              .sort(
+                (a, b) =>
+                  parseFloat(b.date.seconds) - parseFloat(a.date.seconds)
+              )
+              .map((income) => <ItemCard key={income.id} detail={income} />)
+          ) : (
+            <div className="text-sm text-gray-500 ">
+              Go earn some money💵💵, nothing here!
+            </div>
+          )}
+        </main>
       </div>
 
       <Modal

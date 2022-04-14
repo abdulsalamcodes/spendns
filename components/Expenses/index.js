@@ -2,19 +2,20 @@ import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import { BackIcon, PlusIcon } from "../../components/Icons";
 import AuthContext from "../../contexts/AuthContext";
-import DebtContext from "../../contexts/DebtContext";
+import MainContext from "../../contexts/MainContext";
 import ExpenseChart from "../Charts.js/ExpenseChart";
+import ItemCard from "../ItemCard";
 import Modal from "../UI/Modal";
 import ExpenseCard from "./ExpenseCard";
 import ExpenseForm from "./ExpenseForm";
 
 const ExpensePage = () => {
   const [open, setOpen] = useState(false);
-  const { expenses, loadingData } = useContext(DebtContext);
+  const { expenses, loadingData } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
   useEffect(() => {
-      console.log(expenses)
-  }, [expenses])
+    console.log(expenses);
+  }, [expenses]);
 
   return (
     <>
@@ -55,10 +56,27 @@ const ExpensePage = () => {
             <ExpenseChart />
           </div>
         </section>
-
-        <div>
-        {loading || loadingData ? <p className="text-center text-sm text-gray-600">Loading...</p> : expenses.sort((a, b) => parseFloat(b.date.seconds) - parseFloat(a.date.seconds)).map((expense) => <ExpenseCard key={expense.title} expense={expense} />)}
-        </div>
+        <main>
+          <h4 className="mb-4 text-lg">List of your expenses</h4>
+          <div>
+            {loading || loadingData ? (
+              <p className="text-center text-sm text-gray-600">Loading...</p>
+            ) : expenses && expenses.length > 0 ? (
+              expenses
+                .sort(
+                  (a, b) =>
+                    parseFloat(b.date.seconds) - parseFloat(a.date.seconds)
+                )
+                .map((expense) => (
+                  <ItemCard expense key={expense.title} detail={expense} />
+                ))
+            ) : (
+              <div className="text-sm text-gray-500 ">
+                Free born, no expenses🚀
+              </div>
+            )}
+          </div>
+        </main>
       </div>
 
       <Modal

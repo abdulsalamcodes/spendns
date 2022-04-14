@@ -3,11 +3,17 @@ import React, { useContext, useEffect } from "react";
 import AuthContext from "../contexts/AuthContext";
 import HomeChart from "./Charts.js/HomeChart";
 import Dropdown from "./Dropdown";
-import { DebtIcon, ExpenseIcon, IncomeIcon, nairaSign, UserIcon } from "./Icons";
-import IncomeCard from "./Income/IncomeCard";
+import {
+  DebtIcon,
+  ExpenseIcon,
+  IncomeIcon,
+  nairaSign,
+  UserIcon,
+} from "./Icons";
+import ItemCard from "./ItemCard";
 import ExpenseCard from "./Expenses/ExpenseCard";
 import DebtCard from "./Debt/DebtCard";
-import DebtContext from "../contexts/DebtContext";
+import MainContext from "../contexts/MainContext";
 
 const FeatureCard = ({ title, description, Icon, path }) => (
   <Link href={path}>
@@ -30,24 +36,54 @@ const FeatureCard = ({ title, description, Icon, path }) => (
 
 const SectionHeader = ({ title, path }) => (
   <header className="flex align-center justify-between mb-4">
-    <h4>{title}</h4>
+    <h4 className="text-gray-700">{title}</h4>
     <Link href={path}>
-      <a className="text-sm underline text-indigo-700 flex align-center">
-        See All
+      <a className="text-sm text-indigo-700 flex items-center">
+        <span className="mr-2 underline">See All</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 text-indigo-700"
+          className="h-4 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          strokeWidth={2}
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
             d="M13 5l7 7-7 7M5 5l7 7-7 7"
           />
         </svg>
+
+        {/* <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 ml-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+          />
+        </svg> */}
+        {/* <span className="text-2xl">👉</span> */}
+        {/* <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-8 w-8"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg> */}
       </a>
     </Link>
   </header>
@@ -55,7 +91,7 @@ const SectionHeader = ({ title, path }) => (
 
 const Home = () => {
   const { user } = useContext(AuthContext);
-  const { debts, incomes, expenses } = useContext(DebtContext);
+  const { debts, incomes, expenses } = useContext(MainContext);
 
   return (
     <main className="max-w-4xl m-auto h-full w-full">
@@ -135,28 +171,45 @@ const Home = () => {
         <section className="mb-10">
           <SectionHeader path="/income" title="Latest Income" />
           <div>
-            {incomes &&
+            {incomes.length > 0 ? (
               incomes
                 ?.filter((_, i) => i < 2)
-                .map((income) => <IncomeCard income={income} />)}
+                .map((income) => <ItemCard key={income.id} detail={income} />)
+            ) : (
+              <div className="text-sm text-gray-500 ">
+                Go earn some money💵💵, nothing here!
+              </div>
+            )}
           </div>
         </section>
         <section className="mb-10">
           <SectionHeader path="/expenses" title="Latest Expenses" />
           <div>
-            {expenses &&
+            {expenses?.length > 0 ? (
               expenses
                 ?.filter((_, i) => i < 2)
-                .map((expense) => <ExpenseCard expense={expense} />)}
+                .map((expense) => (
+                  <ItemCard expense key={expense.id} detail={expense} />
+                ))
+            ) : (
+              <div className="text-sm text-gray-500 ">
+                Free born, no expenses🚀
+              </div>
+            )}
           </div>
         </section>
         <section className="mb-10">
           <SectionHeader path="/debt" title="Latest Debts" />
           <main className="grid md:grid-cols-2 gap-4">
-            {debts &&
+            {debts.length > 0 ? (
               debts
                 ?.filter((_, i) => i < 2)
-                .map((debt) => <DebtCard debt={debt} />)}
+                .map((debt) => <DebtCard key={debt.id} debt={debt} />)
+            ) : (
+              <div className="text-sm text-gray-500 ">
+                You&apos;ve got no worries📿
+              </div>
+            )}
           </main>
         </section>
       </div>

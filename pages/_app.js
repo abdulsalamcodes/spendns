@@ -1,17 +1,17 @@
 import { ToastContainer } from "react-toast";
 
 import { AuthContextProvider } from "../contexts/AuthContext";
-import { DebtContextProvider } from "../contexts/DebtContext";
+import { MainContextProvider } from "../contexts/MainContext";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
   return (
     <>
       <AuthContextProvider>
-        <DebtContextProvider>
+        <MainContextProvider>
           <Component {...pageProps} />
           <ToastContainer position="bottom-center" delay={3000} />
-        </DebtContextProvider>
+        </MainContextProvider>
       </AuthContextProvider>
     </>
   );

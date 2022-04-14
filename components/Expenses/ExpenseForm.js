@@ -1,30 +1,20 @@
 import { useContext, useState } from "react";
-import DebtContext from "../../contexts/DebtContext";
+import MainContext from "../../contexts/MainContext";
 import useFormFields from "../../hooks/useFormFields";
 import InputField from "../Auth/InputField";
 import DatePicker from "react-date-picker/dist/entry.nostyle";
 import moment from "moment";
 
-const ExpenseForm = ({
-  closeAction,
-  title = "Add New Debt",
-  btnText = "Add Debt",
-}) => {
+const ExpenseForm = ({ closeAction }) => {
   const initialValue = {
-    title: "",
-    category: "Salary",
+    note: "",
     amount: "2000",
   };
   const { formFields, createChangeHandler } = useFormFields(initialValue);
-  const [value, onChange] = useState(new Date());
-  const { addExpense } = useContext(DebtContext);
+  const { addExpense } = useContext(MainContext);
 
   const submitForm = () => {
-    console.log("Adding", {
-      ...formFields,
-      date: value,
-    });
-    addExpense({ ...formFields, date: value });
+    addExpense({ ...formFields, date: new Date() });
     closeAction();
   };
   return (
@@ -34,32 +24,29 @@ const ExpenseForm = ({
       aria-modal="true"
       aria-labelledby="modal-headline"
     >
-      <h3 className="text-center font-bold text-xl text-indigo-900">{title}</h3>
+      <h3 className="text-center font-bold text-xl text-indigo-900">
+        Add New Expense
+      </h3>
       <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
         <InputField
-          title="Title"
-          value={formFields.title}
-          onChange={createChangeHandler("title")}
-          placeholder="Enter the title of the expense"
-        />
-        <InputField
-          title="Category:"
-          value={formFields.category}
-          onChange={createChangeHandler("category")}
-          placeholder="Enter category"
-        />
-        <InputField
           type="number"
-          title="Amount"
+          title="Amount:"
           value={formFields.amount}
           onChange={createChangeHandler("amount")}
           placeholder="Enter the amount"
         />
 
-        <label className="font-semibold text-indigo-800 text-sm mb-4">
+        <InputField
+          title="Note(Add some notes about this expense):"
+          value={formFields.title}
+          onChange={createChangeHandler("note")}
+          placeholder="Enter some note here to help you remember this expense"
+        />
+
+        {/* <label className="font-semibold text-indigo-800 text-sm mb-4">
           Date
         </label>
-        <DatePicker onChange={onChange} value={value} />
+        <DatePicker onChange={onChange} value={value} /> */}
       </div>
       <div className=" px-4 py-3 text-right text-sm">
         <button
@@ -74,7 +61,7 @@ const ExpenseForm = ({
           onClick={submitForm}
           className="py-3 px-6 bg-indigo-500 text-white rounded-md hover:bg-indigo-700 mr-2"
         >
-          <i className="fas fa-plus" /> {btnText}
+          <i className="fas fa-plus" /> Add Expense
         </button>
       </div>
     </div>
