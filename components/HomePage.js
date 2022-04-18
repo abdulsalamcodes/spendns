@@ -3,17 +3,10 @@ import React, { useContext, useEffect } from "react";
 import AuthContext from "../contexts/AuthContext";
 import HomeChart from "./Charts.js/HomeChart";
 import Dropdown from "./Dropdown";
-import {
-  DebtIcon,
-  ExpenseIcon,
-  IncomeIcon,
-  nairaSign,
-  UserIcon,
-} from "./Icons";
+import { UserIcon } from "./Icons";
 import ItemCard from "./ItemCard";
-import ExpenseCard from "./Expenses/ExpenseCard";
-import DebtCard from "./Debt/DebtCard";
 import MainContext from "../contexts/MainContext";
+import Container from "../hoc/Container";
 
 const FeatureCard = ({ title, description, Icon, path }) => (
   <Link href={path}>
@@ -54,36 +47,6 @@ const SectionHeader = ({ title, path }) => (
             d="M13 5l7 7-7 7M5 5l7 7-7 7"
           />
         </svg>
-
-        {/* <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 ml-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M17 8l4 4m0 0l-4 4m4-4H3"
-          />
-        </svg> */}
-        {/* <span className="text-2xl">👉</span> */}
-        {/* <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-8 w-8"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg> */}
       </a>
     </Link>
   </header>
@@ -91,10 +54,10 @@ const SectionHeader = ({ title, path }) => (
 
 const Home = () => {
   const { user } = useContext(AuthContext);
-  const { debts, incomes, expenses } = useContext(MainContext);
+  const { debts, incomes, expenses, total } = useContext(MainContext);
 
   return (
-    <main className="max-w-4xl m-auto h-full w-full">
+    <Container>
       {/* header profile */}
       <header className="flex justify-between p-4 px-7">
         <div className="flex items-center gap-2">
@@ -140,25 +103,29 @@ const Home = () => {
               <HomeChart />
             </div>
 
-            <section className="md:px-8 md:py-8 bg-indigo-50 rounded-3xl">
+            <section className="md:px-8 md:py-8 bg-white rounded-3xl">
               <header className="mb-4">
-                <h3 className="text-xl text-indigo-800">Monthly Overview</h3>
-                <p className="text-sm text-indigo-700">
+                <h3 className="text-xl text-gray-700">Monthly Overview</h3>
+                <p className="text-sm text-gray-600">
                   An overview of your financial activity in this month
                 </p>
               </header>
-              <div className="text-indigo-800">
+              <div className="text-gray-600">
                 <div className="flex mb-2 justify-between align-center">
                   <p>Total Income:</p>
-                  <p>&#8358;2000</p>
+                  <p>&#8358;{total.incomes}</p>
                 </div>
                 <div className="flex mb-2 justify-between align-center">
                   <p>Total Expenses:</p>
-                  <p>&#8358;2000</p>
+                  <p>&#8358; {total.expenses}</p>
                 </div>
                 <div className="flex mb-2 justify-between align-center">
-                  <p>Total Debts:</p>
-                  <p>&#8358;2000</p>
+                  <p>Total Debt Owed:</p>
+                  <p>&#8358; {total.debtOwed}</p>
+                </div>
+                <div className="flex mb-2 justify-between align-center">
+                  <p>Total Debt Owed by me:</p>
+                  <p>&#8358; {total.debtOwedByMe}</p>
                 </div>
               </div>
             </section>
@@ -167,14 +134,19 @@ const Home = () => {
       </section>
       {/* categories */}
       <div className="p-7">
-        {/* <h3 className="text-gray-900 font-mono text-xl mb-2">Features</h3> */}
         <section className="mb-10">
           <SectionHeader path="/income" title="Latest Income" />
           <div>
             {incomes.length > 0 ? (
               incomes
                 ?.filter((_, i) => i < 2)
-                .map((income) => <ItemCard key={income.id} detail={income} />)
+                .map((income) => (
+                  <ItemCard
+                    key={income.date}
+                    detail={income}
+                    itemType="income"
+                  />
+                ))
             ) : (
               <div className="text-sm text-gray-500 ">
                 Go earn some money💵💵, nothing here!
@@ -189,7 +161,12 @@ const Home = () => {
               expenses
                 ?.filter((_, i) => i < 2)
                 .map((expense) => (
-                  <ItemCard expense key={expense.id} detail={expense} />
+                  <ItemCard
+                    expense
+                    key={expense.date}
+                    detail={expense}
+                    itemType="expense"
+                  />
                 ))
             ) : (
               <div className="text-sm text-gray-500 ">
@@ -200,11 +177,13 @@ const Home = () => {
         </section>
         <section className="mb-10">
           <SectionHeader path="/debt" title="Latest Debts" />
-          <main className="grid md:grid-cols-2 gap-4">
-            {debts.length > 0 ? (
+          <main>
+            {debts?.length > 0 ? (
               debts
                 ?.filter((_, i) => i < 2)
-                .map((debt) => <DebtCard key={debt.id} debt={debt} />)
+                .map((debt, idx) => (
+                  <ItemCard key={idx} detail={debt} itemType="debt" />
+                ))
             ) : (
               <div className="text-sm text-gray-500 ">
                 You&apos;ve got no worries📿
@@ -213,29 +192,29 @@ const Home = () => {
           </main>
         </section>
       </div>
-    </main>
+    </Container>
   );
 };
 
 export default Home;
 
-{
-  /* <FeatureCard
-          path="/income"
-          title="Track your Income"
-          description="Keep track of your sources of income, including your passive incomes, the stats over some period of time and more."
-          Icon={<IncomeIcon />}
-        />
-        <FeatureCard
-          path="/expenses"
-          title="Manage your expenses"
-          description="Keep track of your daily expenses, subscriptions and bills, purchases, monthly overview of expenses and more."
-          Icon={<ExpenseIcon />}
-        />
-        <FeatureCard
-          path="/debt"
-          title="Manage your debt"
-          description="Keep an eye on the debt you owned to others and the ones owned to you. Receive and send notifications for upcoming deadlines."
-          Icon={<DebtIcon />}
-        /> */
-}
+/*
+<FeatureCard
+  path="/income"
+  title="Track your Income"
+  description="Keep track of your sources of income, including your passive incomes, the stats over some period of time and more."
+  Icon={<IncomeIcon />}
+/>
+<FeatureCard
+  path="/expenses"
+  title="Manage your expenses"
+  description="Keep track of your daily expenses, subscriptions and bills, purchases, monthly overview of expenses and more."
+  Icon={<ExpenseIcon />}
+/>
+<FeatureCard
+  path="/debt"
+  title="Manage your debt"
+  description="Keep an eye on the debt you owned to others and the ones owned to you. Receive and send notifications for upcoming deadlines."
+  Icon={<DebtIcon />}
+/>
+ */

@@ -1,15 +1,17 @@
+import moment from "moment";
 import React from "react";
 
-const OverviewCard = ({ title, peopleCount, totalPrice}) => {
+const OverviewCard = ({ title, entryCount, totalPrice }) => {
   return (
-    <div className="p-3 bg-gradient-to-r from-sky-500 to-indigo-500 flex-1 rounded-lg mb-3 sm:mb-0">
+    <div className="p-3 bg-gradient-to-r from-sky-500 to-indigo-500 flex-1 rounded-xl mb-3 sm:mb-0">
       <small className="text-white font-mono font-bold underline underline-offset-4">
         {title}
       </small>
       <div className="flex items-center text-white text-xl md:text-2xl gap-5 mt-2">
         <p className="font-bold">Total Price:</p>
         <p>
-          &#8358; {totalPrice} <span className="text-lg bold">({peopleCount} people)</span>
+          &#8358; {totalPrice}
+          <span className="text-lg ml-2 bold">({entryCount} entries)</span>
         </p>
       </div>
       <p className="text-xs text-red-50 mt-2 gap-1 flex items-center">
@@ -27,7 +29,7 @@ const OverviewCard = ({ title, peopleCount, totalPrice}) => {
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
           />
         </svg>{" "}
-        12th December, 2021
+        {moment(new Date()).format("DD MMMM, YYYY")}
       </p>
     </div>
   );

@@ -4,14 +4,14 @@ import { BackIcon, PlusIcon } from "../../components/Icons";
 import AuthContext from "../../contexts/AuthContext";
 import MainContext from "../../contexts/MainContext";
 import ExpenseChart from "../Charts.js/ExpenseChart";
+import OverviewCard from "../Debt/OverviewCard";
 import ItemCard from "../ItemCard";
 import Modal from "../UI/Modal";
-import ExpenseCard from "./ExpenseCard";
 import ExpenseForm from "./ExpenseForm";
 
 const ExpensePage = () => {
   const [open, setOpen] = useState(false);
-  const { expenses, loadingData } = useContext(MainContext);
+  const { expenses, loadingData, total } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
   useEffect(() => {
     console.log(expenses);
@@ -44,17 +44,11 @@ const ExpensePage = () => {
         </header>
 
         <section className="my-5">
-          <div className="min-h-80 p-4 w-full rounded-xl bg-gradient-to-r from-sky-100 to-indigo-100">
-            <div className="flex items-center justify-between p-3 gap-5 rounded-xl bg-gray-100">
-              <button className="p-2 rounded-md bg-gradient-to-r from-indigo-400 to-violet-400 text-white flex-1">
-                Weekly
-              </button>
-              <button className="p-2 rounded-md bg-gradient-to-r from-indigo-100 to-violet-100 flex-1 ">
-                Monthly
-              </button>
-            </div>
-            <ExpenseChart />
-          </div>
+          <OverviewCard
+            entryCount={expenses.length}
+            totalPrice={total.expenses}
+            å
+          />
         </section>
         <main>
           <h4 className="mb-4 text-lg">List of your expenses</h4>
@@ -68,7 +62,12 @@ const ExpensePage = () => {
                     parseFloat(b.date.seconds) - parseFloat(a.date.seconds)
                 )
                 .map((expense) => (
-                  <ItemCard expense key={expense.title} detail={expense} />
+                  <ItemCard
+                    expense
+                    key={expense.title}
+                    detail={expense}
+                    itemType="expense"
+                  />
                 ))
             ) : (
               <div className="text-sm text-gray-500 ">
@@ -89,3 +88,19 @@ const ExpensePage = () => {
 };
 
 export default ExpensePage;
+
+/**
+ * 
+ * <div className="min-h-80 p-4 w-full rounded-xl bg-gradient-to-r from-sky-100 to-indigo-100">
+            <div className="flex items-center justify-between p-3 gap-5 rounded-xl bg-gray-100">
+              <button className="p-2 rounded-md bg-gradient-to-r from-indigo-400 to-violet-400 text-white flex-1">
+                Weekly
+              </button>
+              <button className="p-2 rounded-md bg-gradient-to-r from-indigo-100 to-violet-100 flex-1 ">
+                Monthly
+              </button>
+            </div>
+            <ExpenseChart /> 
+            
+            </div>
+ */

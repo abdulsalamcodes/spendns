@@ -4,8 +4,8 @@ const Button = ({ onClick, children, variant }) => {
   const btnBaseStyle = "py-3 px-6 mx-1";
   const btnStyleType = {
     base: "bg-gray-200 text-indigo-900 rounded-md hover:bg-gray-300",
-    primary: "bg-indigo-500 text-white rounded-md hover:bg-indigo-700",
-    danger: "bg-red-500 text-white rounded-md hover:bg-red-700",
+    primary: "bg-indigo-600 text-white rounded-md hover:bg-indigo-700",
+    danger: "bg-red-600 text-white rounded-md hover:bg-red-700",
   };
   return (
     <button

@@ -11,12 +11,9 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="">
-        <HomePage />
-      </main>
+      <HomePage />
     </div>
   );
-}
+};
 
-
-export default  withAuth(Home);
+export default withAuth(Home);

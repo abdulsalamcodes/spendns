@@ -12,12 +12,19 @@ export const MainContextProvider = ({ children }) => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [loadingData, setLoading] = useState(false);
+  const [total, setTotal] = useState({
+    debtOwedByMe: 0,
+    incomes: 0,
+    expenses: 0,
+    debtOwed: 0,
+  });
 
   const addDebt = async (debt) => {
     const userRef = doc(db, "users", user?.id);
     await updateDoc(userRef, {
       debts: arrayUnion(debt),
-      totalDebt: +debt.amount,
+      totalDebtOwed: !debt.owedByMe && total.debtOwed + debt.amount,
+      totalDebtOwedByMe: debt.owedByMe && total.debtOwedByMe + debt.amount,
     })
       .then(() => {
         toast.success("Successfully added!");
@@ -28,10 +35,11 @@ export const MainContextProvider = ({ children }) => {
       });
   };
 
-  const addIncome = async (debt) => {
+  const addIncome = async (income) => {
     const userRef = doc(db, "users", user?.id);
     await updateDoc(userRef, {
-      incomes: arrayUnion(debt),
+      incomes: arrayUnion(income),
+      totalIncome: total.incomes + income.amount,
     })
       .then(() => {
         toast.success("Successfully added!");
@@ -46,6 +54,7 @@ export const MainContextProvider = ({ children }) => {
     const userRef = doc(db, "users", user?.id);
     await updateDoc(userRef, {
       expenses: arrayUnion(expense),
+      totalExpenses: total.expenses + expense.amount,
     })
       .then(() => {
         toast.success("Successfully added!");
@@ -55,6 +64,23 @@ export const MainContextProvider = ({ children }) => {
         toast.error("An error occurred.");
       });
   };
+
+  useEffect(() => {
+    const sum = (item) =>
+      item
+        ?.map((el) => el.amount * 1)
+        .reduce((a, b) => {
+          console.log(a, b);
+          return a + b;
+        }, 0);
+    setTotal((prev) => ({
+      ...prev,
+      incomes: sum(incomes),
+      debtOwed: sum(debts.filter((debt) => !debt.owedByMe)),
+      debtOwedByMe: sum(debts.filter((debt) => debt.owedByMe)),
+      expenses: sum(expenses),
+    }));
+  }, [incomes, debts, expenses]);
 
   useEffect(() => {
     // update on snapshot.
@@ -81,6 +107,7 @@ export const MainContextProvider = ({ children }) => {
     addDebt,
     addIncome,
     addExpense,
+    total,
   };
   return <MainContext.Provider value={value}>{children}</MainContext.Provider>;
 };

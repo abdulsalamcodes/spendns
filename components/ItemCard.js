@@ -1,40 +1,60 @@
 import moment from "moment";
 import React, { useState } from "react";
+import DebtForm from "./Debt/DebtForm";
 import ExpenseForm from "./Expenses/ExpenseForm";
-import { ArrowDown, ArrowUp } from "./Icons";
+import { ArrowDown, ArrowUp, DebtIcon, DebtSvgIcon } from "./Icons";
 import IncomeForm from "./Income/IncomeForm";
 import Modal from "./UI/Modal";
 import ViewItemModal from "./ViewItemModal";
 
-const ItemCard = ({ detail, expense }) => {
-  const props = {
-    amount: `text-xl font-bold ${
-      !expense ? "text-green-700" : "text-pink-400"
-    }`,
-    sign: expense ? "-" : "+",
-    icon: expense ? <ArrowUp /> : <ArrowDown />,
-    form: expense ? (
-      <ExpenseForm closeAction={() => setOpen(false)} />
-    ) : (
-      <IncomeForm closeAction={() => setOpen(false)} />
-    ),
-  };
+const ItemCard = ({ detail, itemType }) => {
   const [activeModal, setActiveModal] = useState("");
+  const closeAction = () => setActiveModal("");
+  const props = {
+    income: {
+      amount: "text-2xl font-bold text-green-700",
+      sign: "+",
+      icon: <ArrowDown />,
+      form: <IncomeForm closeAction={closeAction} />,
+      subText: `Created on: ${moment(detail?.date.toDate()).format(
+        "DD/MM/YYYY"
+      )}`,
+    },
+    expense: {
+      amount: `text-2xl font-bold text-pink-400`,
+      sign: "-",
+      icon: <ArrowUp />,
+      form: <ExpenseForm closeAction={closeAction} />,
+      subText: `Created on: ${moment(detail?.date.toDate()).format(
+        "DD/MM/YYYY"
+      )}`,
+    },
+    debt: {
+      amount: `text-2xl font-bold text-gray-500`,
+      sign: "",
+      icon: <DebtSvgIcon />,
+      form: <DebtForm closeAction={closeAction} />,
+      subText: `${detail.owedByMe ? "Owed To: " : "Owed By: "} ${
+        detail.personInvolved
+      }`,
+    },
+  };
 
+  const subText = () => {};
+
+  const Item = props[itemType];
   return (
     <>
       <div className="mb-5 flex items-center sm:flex-row flex-col  justify-between text-white p-5 shadow-violet-100 bg-indigo-50 rounded-lg">
         <div className="flex align-center gap-2 items-center">
-          <div className="h-12 w-12 bg-gradient-to-r from-violet-400 to-fuchsia-300 rounded-full place-content-center grid">
-            {props.icon}
+          <div className="h-12 w-12 text-indigo-700 bg-white rounded-full place-content-center grid">
+            {Item.icon}
           </div>
           <div>
-            <p className={props.amount}>
-              {props.sign} &#8358; {detail?.amount}
+            <p className={Item.amount}>
+              {Item.sign} &#8358; {detail?.amount}
             </p>
-            <p className="text-xs text-indigo-600 capitalize">
-              Created on: {moment(detail?.date.toDate()).format("DD/MM/YYYY")}
-            </p>
+            <p className="text-sm text-indigo-600 capitalize">{Item.subText}</p>
           </div>
         </div>
 
@@ -61,7 +81,7 @@ const ItemCard = ({ detail, expense }) => {
           </button>
           <button
             onClick={() => setActiveModal("view")}
-            className="text-sm p-3 font-bold bg-white flex rounded-md font-bold text-gray-900"
+            className="text-sm p-3 border-solid border-2 border-indigo-500 font-bold bg-white flex rounded-md font-bold text-gray-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -84,12 +104,18 @@ const ItemCard = ({ detail, expense }) => {
 
       <Modal
         closeAction={() => setActiveModal("")}
-        Component={<ViewItemModal detail={detail} icon={props.icon} />}
+        Component={
+          <ViewItemModal
+            onClick={closeAction}
+            detail={detail}
+            icon={Item.icon}
+          />
+        }
         isOpen={activeModal === "view"}
       />
       <Modal
         closeAction={() => setActiveModal("")}
-        Component={props.form}
+        Component={Item.form}
         isOpen={activeModal === "edit"}
       />
     </>

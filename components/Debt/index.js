@@ -4,17 +4,23 @@ import Container from "../../hoc/Container";
 import Modal from "../../components/UI/Modal";
 import { BackIcon, PlusIcon } from "../../components/Icons";
 import DebtForm from "./DebtForm";
-import DebtCard from "./DebtCard";
 import OverviewCard from "./OverviewCard";
 import MainContext from "../../contexts/MainContext";
 import AuthContext from "../../contexts/AuthContext";
+import ItemCard from "../ItemCard";
 
 const DebtPage = () => {
   const [open, setOpen] = useState(false);
   const { debts, loadingData } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState("All");
   const TabButton = ({ text }) => (
-    <button className="items-center flex text-sm cursor-pointer pb-3 hover:text-violet-600 border-b-1  hover:border-b-violet-600">
+    <button
+      onClick={() => setActiveTab(text)}
+      className={`${
+        activeTab === text && "bg-indigo-500 text-white px-4"
+      } items-center flex text-sm cursor-pointer py-2 border-b-1  hover:border-b-violet-600`}
+    >
       {text}
     </button>
   );
@@ -51,25 +57,25 @@ const DebtPage = () => {
 
         <section className="mt-10">
           <header className="border-b-2 flex items-end gap-5 w-full mb-3 ">
+            <TabButton text="All" />
             <TabButton text="Owe Me" />
             <TabButton text="Owe" />
             <TabButton text="Cleared Debt" />
           </header>
 
-          {/* {uiDebts?.length > 0 ?
-           ( */}
-          <main className="grid md:grid-cols-2 gap-4">
+          <main className=" gap-4">
             {loading || loadingData ? (
               <p className="text-center text-sm text-gray-600">Loading...</p>
+            ) : !debts.length || debts.length === 0 ? (
+              <div className="bg-white font-bold p-4 w-full text-center m-auto shadow-md rounded-lg text-green-500">
+                Debt List Empty! 🎉
+              </div>
             ) : (
-              debts?.map((debt) => <DebtCard debt={debt} />)
+              debts?.map((debt, i) => (
+                <ItemCard key={idx} detail={debt} itemType="debt" />
+              ))
             )}
           </main>
-          {/* // ) : (
-          //   <div className="bg-white font-bold p-4 w-full text-center m-auto shadow-md rounded-lg text-green-500">
-          //     Debt List Empty! 🎉
-          //   </div>
-          // )} */}
         </section>
       </div>
 

@@ -30,15 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/income": [
+    "/expenses": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/income.js"
-    ],
-    "/login": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/login.js"
+      "static/chunks/pages/expenses.js"
     ]
   },
   "ampFirstPages": []

@@ -1,40 +1,45 @@
-import { FieldValue, Firestore } from "firebase/firestore";
 import { useContext, useState } from "react";
 import MainContext from "../../contexts/MainContext";
 import useFormFields from "../../hooks/useFormFields";
 import InputField from "../Auth/InputField";
-import DatePicker from "react-date-picker/dist/entry.nostyle";
-import moment from "moment";
 
-const DebtForm = ({
-  closeAction,
-  title = "Add New Debt",
-  btnText = "Add Debt",
-}) => {
-  const todaysDate = new Date();
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+const DebtForm = ({ closeAction }) => {
   const initialValue = {
-    owedBy: "Akin",
-    amount: "2000",
-    dateOwed: "12/03/2020",
+    personInvolved: "",
+    amount: 2000,
+    dateAdded: new Date(),
     settled: false,
   };
+  const [owedByMe, setOwedByMe] = useState(false);
+  const toggleClass = " transform translate-x-6";
   const { formFields, createChangeHandler } = useFormFields(initialValue);
-  const [value, onChange] = useState(new Date());
   const { addDebt } = useContext(MainContext);
 
   const submitForm = () => {
-    addDebt({ ...formFields, dateOwed: value });
+    addDebt({ ...formFields, owedByMe });
     closeAction();
   };
+
+  const SwitchInput = () => (
+    <div className="mt-4 mb-2 flex items-center ">
+      <div className="font-semibold text-indigo-800 text-sm mr-2">
+        Owed By Me:
+      </div>
+      <div
+        className="md:w-14 md:h-8 w-12 flex items-center bg-gray-200 rounded-full p-1 cursor-pointer"
+        onClick={() => setOwedByMe(!owedByMe)}
+      >
+        <div
+          className={`${
+            !owedByMe ? "bg-gray-200" : "bg-indigo-500"
+          } md:w-6 md:h-6 h-5 w-5 rounded-full shadow-md transform duration-300 ease-in-out ${
+            !owedByMe ? null : toggleClass
+          }`}
+        ></div>
+      </div>
+    </div>
+  );
+
   return (
     <div
       className="inline-block align-center p-4 pt-5 bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
@@ -42,14 +47,19 @@ const DebtForm = ({
       aria-modal="true"
       aria-labelledby="modal-headline"
     >
-      <h3 className="text-center font-bold text-xl text-indigo-900">{title}</h3>
-      <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+      <h3 className="text-center font-bold text-xl text-indigo-900">
+        Add New Debt
+      </h3>
+      <main>
+        <SwitchInput />
+
         <InputField
-          title="Owed By:"
-          value={formFields.owedBy}
-          onChange={createChangeHandler("owedBy")}
+          title={!owedByMe ? "Owed By:" : "Owed To:"}
+          value={formFields.personInvolved}
+          onChange={createChangeHandler("personInvolved")}
           placeholder="Enter the name of the person owing you"
         />
+
         <InputField
           type="number"
           title="Amount"
@@ -57,12 +67,7 @@ const DebtForm = ({
           onChange={createChangeHandler("amount")}
           placeholder="Enter the amount owed"
         />
-
-        <label className="font-semibold text-indigo-800 text-sm mb-4">
-          Date
-        </label>
-        <DatePicker onChange={onChange} value={value} />
-      </div>
+      </main>
       <div className=" px-4 py-3 text-right text-sm">
         <button
           type="button"
@@ -76,7 +81,7 @@ const DebtForm = ({
           onClick={submitForm}
           className="py-3 px-6 bg-indigo-500 text-white rounded-md hover:bg-indigo-700 mr-2"
         >
-          <i className="fas fa-plus" /> {btnText}
+          <i className="fas fa-plus" /> Add Debt
         </button>
       </div>
     </div>

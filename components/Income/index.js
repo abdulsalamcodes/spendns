@@ -7,10 +7,11 @@ import IncomeChart from "../Charts.js/IncomeChart";
 import Modal from "../UI/Modal";
 import ItemCard from "../ItemCard";
 import IncomeForm from "./IncomeForm";
+import OverviewCard from "../Debt/OverviewCard";
 
 const IncomePage = () => {
   const [open, setOpen] = useState(false);
-  const { incomes, loadingData } = useContext(MainContext);
+  const { incomes, loadingData, total } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
 
   return (
@@ -40,17 +41,11 @@ const IncomePage = () => {
         </header>
 
         <section className="my-5">
-          <div className="min-h-80 p-4 w-full rounded-xl bg-gradient-to-r from-sky-100 to-indigo-100">
-            <div className="flex items-center justify-between p-3 gap-5 rounded-xl bg-gray-100">
-              <button className="p-2 rounded-md bg-gradient-to-r from-indigo-400 to-violet-400 text-white flex-1">
-                Weekly
-              </button>
-              <button className="p-2 rounded-md bg-gradient-to-r from-indigo-100 to-violet-100 flex-1 ">
-                Monthly
-              </button>
-            </div>
-            <IncomeChart />
-          </div>
+          <OverviewCard
+            title="Incomes"
+            entryCount={incomes.length}
+            totalPrice={total.incomes}
+          />
         </section>
 
         <main>
@@ -64,7 +59,9 @@ const IncomePage = () => {
                 (a, b) =>
                   parseFloat(b.date.seconds) - parseFloat(a.date.seconds)
               )
-              .map((income) => <ItemCard key={income.id} detail={income} />)
+              .map((income) => (
+                <ItemCard key={income.id} detail={income} itemType="income" />
+              ))
           ) : (
             <div className="text-sm text-gray-500 ">
               Go earn some money💵💵, nothing here!

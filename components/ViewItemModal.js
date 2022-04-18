@@ -3,18 +3,20 @@ import React from "react";
 import { modalWrapperStyle } from "./commonStyles";
 import Button from "./UI/Button";
 
-const ViewItemModal = ({ icon, detail }) => {
+const ViewItemModal = ({ icon, detail, onClick }) => {
   return (
     <div className={`${modalWrapperStyle} p-10`}>
-      <header className="text-center flex items-center justify-center flex-col">
+      <header className="flex items-center gap-3">
         {/* <h3 className="text-center text-xl font-bold mb-4 ">Income Detail</h3> */}
-        <div className="h-24 w-24 text-white mb-3 bg-gradient-to-r from-violet-400 to-fuchsia-300 rounded-full ali place-content-center grid">
+        <div className="h-24 w-24 text-indigo-800 mb-3 bg-indigo-50 rounded-full ali place-content-center grid">
           {icon}
         </div>
-        <h2 className="text-3xl font-bold mb-1">{`₦${detail.amount}`}</h2>
-        <p>{`Created on: ${moment(detail?.date.toDate()).format(
-          "DD/MM/YYYY"
-        )}`}</p>
+        <div>
+          <h2 className="text-4xl font-bold mb-1">{`₦${detail.amount}`}</h2>
+          <p className="text-gray-400">{`Created on: ${moment(
+            detail?.date.toDate()
+          ).format("DD/MM/YYYY")}`}</p>
+        </div>
       </header>
       <main className="mt-5">
         <div>
@@ -23,9 +25,13 @@ const ViewItemModal = ({ icon, detail }) => {
         </div>
       </main>
 
-      <div className="flex items-center justify-end">
-        <Button variant="danger">Delete</Button>
-        <Button variant="primary">Ok</Button>
+      <div className="flex items-center grid grid-cols-2 ">
+        <Button onClick={onClick} variant="danger">
+          Delete
+        </Button>
+        <Button onClick={onClick} variant="primary">
+          Close
+        </Button>
       </div>
     </div>
   );

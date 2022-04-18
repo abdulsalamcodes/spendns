@@ -161,7 +161,7 @@ export const BackIcon = () => (
 export const ArrowDown = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6"
+    className="h-5 w-5 rotate-45"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -178,7 +178,7 @@ export const ArrowDown = () => (
 export const ArrowUp = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6"
+    className="h-5 w-5 -rotate-45"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -188,6 +188,25 @@ export const ArrowUp = () => (
       strokeLinecap="round"
       strokeLinejoin="round"
       d="M5 10l7-7m0 0l7 7m-7-7v18"
+    />
+  </svg>
+);
+
+export const DebtSvgIcon = () => (
+  <svg
+    width="22"
+    height="20"
+    viewBox="0 0 22 20"
+    className="h-5 w-5"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M21 10H17L14 19L8 1L5 10H1"
+      stroke="#6356D7"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
