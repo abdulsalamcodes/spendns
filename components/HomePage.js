@@ -57,7 +57,7 @@ const Home = () => {
   const { debts, incomes, expenses, total } = useContext(MainContext);
 
   return (
-    <Container>
+    <div className="max-w-3xl m-auto">
       {/* header profile */}
       <header className="flex justify-between p-4 px-7">
         <div className="flex items-center gap-2">
@@ -98,12 +98,12 @@ const Home = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 ">
+          <div className="md:flex items-center gap-2">
             <div className="mt-5 h-1/2 w-1/2 ">
               <HomeChart />
             </div>
 
-            <section className="md:px-8 md:py-8 bg-white rounded-3xl">
+            <section className="md:px-8 p-3 md:py-8 bg-white rounded-3xl">
               <header className="mb-4">
                 <h3 className="text-xl text-gray-700">Monthly Overview</h3>
                 <p className="text-sm text-gray-600">
@@ -192,7 +192,7 @@ const Home = () => {
           </main>
         </section>
       </div>
-    </Container>
+    </div>
   );
 };
 

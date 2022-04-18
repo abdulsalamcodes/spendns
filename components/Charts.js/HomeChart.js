@@ -9,7 +9,7 @@ const options = {
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: "right",
+      position: "bottom",
     },
   },
 };
