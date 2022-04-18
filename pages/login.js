@@ -6,7 +6,7 @@ import Loader from "../components/UI/Loader";
 import AuthContext from "../contexts/AuthContext";
 import { auth } from "../firebase";
 
-const login = () => {
+const Login = () => {
   const { user, loading } = useContext(AuthContext);
   const router = useRouter();
 
@@ -29,4 +29,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;
