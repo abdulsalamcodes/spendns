@@ -11,10 +11,10 @@ const Login = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("login", auth.currentUser, user);
+    console.log("login Current User and User", auth.currentUser, user);
     if (user) {
       router.replace("/");
-      console.log("login", auth.currentUser);
+      console.log("login Current User and User", auth.currentUser, user);
     }
   }, []);
 

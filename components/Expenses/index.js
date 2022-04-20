@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { BackIcon, PlusIcon } from "../../components/Icons";
 import AuthContext from "../../contexts/AuthContext";
 import MainContext from "../../contexts/MainContext";
@@ -13,9 +13,6 @@ const ExpensePage = () => {
   const [open, setOpen] = useState(false);
   const { expenses, loadingData, total } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
-  useEffect(() => {
-    console.log(expenses);
-  }, [expenses]);
 
   return (
     <>

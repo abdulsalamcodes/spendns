@@ -57,7 +57,7 @@ const Home = () => {
   const { debts, incomes, expenses, total } = useContext(MainContext);
 
   return (
-    <div className="max-w-3xl m-auto">
+    <div className="max-w-4xl m-auto">
       {/* header profile */}
       <header className="flex justify-between p-4 px-7">
         <div className="flex items-center gap-2">

@@ -70,7 +70,6 @@ export const MainContextProvider = ({ children }) => {
       item
         ?.map((el) => el.amount * 1)
         .reduce((a, b) => {
-          console.log(a, b);
           return a + b;
         }, 0);
     setTotal((prev) => ({
@@ -92,7 +91,6 @@ export const MainContextProvider = ({ children }) => {
         setIncomes(doc.data().incomes);
         setDebts(doc.data().debts);
         setExpenses(doc.data().expenses);
-        console.log("[MainContext", doc.data());
       }
       setLoading(false);
     });

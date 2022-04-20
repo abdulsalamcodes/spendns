@@ -17,7 +17,6 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [formMode, setFormMode] = useState("login");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -29,23 +28,17 @@ export const AuthContextProvider = ({ children }) => {
       querySnapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
         setUser({ ...doc.data(), id: doc.id });
-        setLoading(false);
-        console.log(router.pathname)
-        if (router.pathname === '/login' || router.pathname === '/') {
-          router.replace("/");
-        }
+        router.replace('/')
       });
-    } else {
-      setLoading(false);
-      toast.error("User does not exist.");
-    }
+    } 
+    toast.error("User does not exist.");
+    setLoading(false);
   };
 
   const getCurrentUser = () => {
     setLoading(true);
     onAuthStateChanged(auth, (authenticatedUser) => {
       if (authenticatedUser) {
-        console.log("authenticatedUser", authenticatedUser);
         fetchUser(authenticatedUser);
       } else {
         setUser(null);
@@ -54,10 +47,6 @@ export const AuthContextProvider = ({ children }) => {
       }
     });
   };
-
-  useEffect(() => {
-    getCurrentUser();
-  }, []);
 
   const updateUsername = (displayName) =>
     updateProfile(auth.currentUser, { displayName });
@@ -73,6 +62,7 @@ export const AuthContextProvider = ({ children }) => {
 
       .catch((error) => {
         setLoading(false);
+        router.redirect('/')
         toast.error(error.message);
       });
   };
@@ -80,7 +70,9 @@ export const AuthContextProvider = ({ children }) => {
   const handleSignUp = async (username, email, password, photoUrl = "") => {
     try {
       setPersistence(auth, browserLocalPersistence);
-      const { storedUser } = await createUserWithEmailAndPassword(auth, email, password);
+      const response = await createUserWithEmailAndPassword(auth, email, password);
+      const storedUser = response.user;
+      console.log("Hello", storedUser)
       if (storedUser) {
         setLoading(true);
         await updateUsername(username);
@@ -97,22 +89,25 @@ export const AuthContextProvider = ({ children }) => {
           incomes: [],
         };
         await setDoc(doc(db, "users", storedUser.uid), userData);
-        getCurrentUser();
+        fetchUser(storedUser);
       }
     } catch (e) {
       setLoading(false);
       console.error("Error adding document: ", e);
-      toast.error(e);
+      toast.error(e.message);
     }
   };
+
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
 
   const value = {
     user,
     loading,
     handleSignUp,
     handleLogin,
-    formMode,
-    setFormMode,
     fetchUser,
     setUser,
   };

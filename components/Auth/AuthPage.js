@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import AuthContext from "../../contexts/AuthContext";
 import useFormFields from "../../hooks/useFormFields";
 import InputField from "./InputField";
@@ -10,7 +10,8 @@ const LoginPage = () => {
     password: 'oladeji369'
   }
   const { formFields, createChangeHandler } = useFormFields(initialValue);
-  const { handleSignUp, loading, formMode, handleLogin, setFormMode } = useContext(AuthContext);
+  const { handleSignUp, loading, handleLogin } = useContext(AuthContext);
+  const [formMode, setFormMode] = useState("login");
 
   const formState = {
     login: {
@@ -50,6 +51,7 @@ const LoginPage = () => {
         />
         <InputField
           title="Password"
+          type="password"
           value={formFields.password}
           onChange={createChangeHandler('password')}
           placeholder="Enter password"
