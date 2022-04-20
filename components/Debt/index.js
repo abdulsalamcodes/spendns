@@ -11,7 +11,7 @@ import ItemCard from "../ItemCard";
 
 const DebtPage = () => {
   const [open, setOpen] = useState(false);
-  const { debts, loadingData } = useContext(MainContext);
+  const { debts, loadingData, total } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("All");
   const TabButton = ({ text }) => (
@@ -26,7 +26,7 @@ const DebtPage = () => {
   );
   return (
     <Container>
-      <div className="p-5">
+      <div className="p-5 max-w-4xl m-auto">
         <div className="flex justify-between ">
           <div className="flex items-center gap-2">
             <Link href="/">
@@ -51,8 +51,8 @@ const DebtPage = () => {
         </header>
 
         <section className="sm:flex gap-4 flex-wrap mt-4 ">
-          <OverviewCard title="OWE ME" peopleCount={5} totalPrice="50, 000" />
-          <OverviewCard title="OWE" peopleCount={5} totalPrice="60, 000" />
+          <OverviewCard title="OWE ME" peopleCount={5} totalPrice={total.debtOwed} />
+          <OverviewCard title="OWE" peopleCount={5} totalPrice={total.debtOwedByMe} />
         </section>
 
         <section className="mt-10">

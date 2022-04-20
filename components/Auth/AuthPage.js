@@ -5,9 +5,9 @@ import InputField from "./InputField";
 
 const LoginPage = () => {
   const initialValue = {
-    username: 'abdulsalam',
-    email: 'abdulsalamabodunrin369+new@gmail.com',
-    password: 'oladeji369'
+    username: '',
+    email: '',
+    password: ''
   }
   const { formFields, createChangeHandler } = useFormFields(initialValue);
   const { handleSignUp, loading, handleLogin } = useContext(AuthContext);
