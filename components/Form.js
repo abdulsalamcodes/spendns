@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 
 const Form = (props) => {
-  const { closeAction, submitHandler, type, all, setType, detail } = props;
+  const { closeAction, submitHandler, type, all, setType, detail, items } =
+    props;
   const [owedByMe, setOwedByMe] = useState(false);
   const toggleClass = " transform translate-x-6";
   const initialValue = detail
@@ -26,7 +27,9 @@ const Form = (props) => {
 
   const submitForm = () => {
     submitHandler(
-      type === "debt" ? { ...formFields, ...debtSpecificData } : formFields
+      type === "debt" ? { ...formFields, ...debtSpecificData } : formFields,
+      items,
+      type
     );
     closeAction();
   };

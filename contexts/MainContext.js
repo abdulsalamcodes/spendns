@@ -124,15 +124,16 @@ export const MainContextProvider = ({ children }) => {
   };
 
   // PATCH ITEM.
-  const updateDebt = async (newDebt) => {
-    console.log(newDebt);
-    const newDebts = debts.map((debt) =>
-      debt.id === newDebt.id ? (debt = newDebt) : debt
-    );
+  const update = async (item, array, field) => {
+    console.log(item);
+    const newArray = array.map((el) => (el.id === item.id ? (el = item) : el));
     const userRef = doc(db, "users", user?.id);
-    await updateDoc(userRef, {
-      debts: newDebts,
-    })
+    const items = {
+      income: { incomes: newArray },
+      expense: { expenses: newArray },
+      debt: { debts: newArray },
+    };
+    await updateDoc(userRef, items[field])
       .then(() => {
         toast.success("Successfully updated!");
       })
@@ -202,7 +203,7 @@ export const MainContextProvider = ({ children }) => {
     deleteExpense,
     deleteIncome,
     deleteDebt,
-    updateDebt,
+    update,
   };
   return <MainContext.Provider value={value}>{children}</MainContext.Provider>;
 };

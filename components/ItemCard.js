@@ -8,8 +8,15 @@ import ViewItemModal from "./ViewItemModal";
 
 const ItemCard = ({ detail, itemType }) => {
   const [activeModal, setActiveModal] = useState("");
-  const { deleteExpense, deleteIncome, deleteDebt, updateDebt } =
-    useContext(MainContext);
+  const {
+    deleteExpense,
+    deleteIncome,
+    deleteDebt,
+    update,
+    incomes,
+    debts,
+    expenses,
+  } = useContext(MainContext);
   const closeAction = () => setActiveModal("");
   const props = {
     income: {
@@ -17,7 +24,15 @@ const ItemCard = ({ detail, itemType }) => {
       sign: "+",
       icon: <ArrowDown />,
       deleteAction: deleteIncome,
-      form: <Form closeAction={closeAction} type="income" detail={detail} />,
+      form: (
+        <Form
+          closeAction={closeAction}
+          type="income"
+          submitHandler={update}
+          detail={detail}
+          items={incomes}
+        />
+      ),
       subText: `Created on: ${moment(detail?.date.toDate()).format(
         "DD/MM/YYYY"
       )}`,
@@ -27,7 +42,15 @@ const ItemCard = ({ detail, itemType }) => {
       sign: "-",
       deleteAction: deleteExpense,
       icon: <ArrowUp />,
-      form: <Form closeAction={closeAction} type="expense" detail={detail} />,
+      form: (
+        <Form
+          closeAction={closeAction}
+          type="expense"
+          submitHandler={update}
+          items={expenses}
+          detail={detail}
+        />
+      ),
       subText: `Created on: ${moment(detail?.date.toDate()).format(
         "DD/MM/YYYY"
       )}`,
@@ -42,7 +65,8 @@ const ItemCard = ({ detail, itemType }) => {
           closeAction={closeAction}
           type="debt"
           detail={detail}
-          submitHandler={updateDebt}
+          items={debts}
+          submitHandler={update}
         />
       ),
       subText: `${detail.owedByMe ? "Owed To: " : "Owed By: "} ${
