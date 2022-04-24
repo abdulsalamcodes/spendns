@@ -1,12 +1,14 @@
 import Link from "next/link";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../contexts/AuthContext";
 import HomeChart from "./Charts.js/HomeChart";
 import Dropdown from "./Dropdown";
-import { UserIcon } from "./Icons";
+import { PlusIcon, UserIcon } from "./Icons";
 import ItemCard from "./ItemCard";
 import MainContext from "../contexts/MainContext";
 import Container from "../hoc/Container";
+import Modal from "./UI/Modal";
+import Form from "./Form";
 
 const FeatureCard = ({ title, description, Icon, path }) => (
   <Link href={path}>
@@ -53,11 +55,26 @@ const SectionHeader = ({ title, path }) => (
 );
 
 const Home = () => {
-  const { user } = useContext(AuthContext);
-  const { debts, incomes, expenses, total } = useContext(MainContext);
+  const user = useContext(AuthContext).user;
+  const { debts, incomes, expenses, total, addExpense, addIncome, addDebt } =
+    useContext(MainContext);
+  const [show, setShow] = useState(false);
+  const [type, setType] = useState("income");
+
+  const itemTypes = {
+    income: {
+      submitHandler: addIncome,
+    },
+    expense: {
+      submitHandler: addExpense,
+    },
+    debt: {
+      submitHandler: addDebt,
+    },
+  };
 
   return (
-    <div className="max-w-4xl m-auto">
+    <div className="max-w-4xl m-auto relative">
       {/* header profile */}
       <header className="flex justify-between p-4 px-7">
         <div className="flex items-center gap-2">
@@ -80,13 +97,21 @@ const Home = () => {
           {/* <p>Fiachra Şamil</p> */}
           <h1 className="font-bold text-xl text-indigo-600">Spendns</h1>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShow(true)}
+            type="button"
+            className="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-pink-500 hover:to-yellow-500 text-white p-2 rounded flex gap-2 items-center"
+          >
+            <PlusIcon size="4" />
+            <span> Add New</span>
+          </button>
           <Dropdown />
         </div>
       </header>
       {/* top overview */}
       <section className="mt-5 px-7">
-        <div className="min-h-80  p-4 w-full rounded-xl bg-gradient-to-r from-sky-100 shadow-sm to-indigo-100">
+        <div className="min-h-80 p-6  md:p-4 w-full rounded-xl bg-gradient-to-r from-sky-100 shadow-sm to-indigo-100">
           <div className="flex flex-center gap-2">
             <div className="h-12 w-12 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full place-content-center grid">
               <UserIcon />
@@ -99,13 +124,13 @@ const Home = () => {
             </div>
           </div>
           <div className="md:flex items-center gap-2">
-            <div className="mt-5 h-1/2 w-1/2 ">
+            <div className="mt-5 md:h-1/2 md:w-1/2 mb-5 md:mb-0 ">
               <HomeChart />
             </div>
 
-            <section className="md:px-8 p-3 md:py-8 bg-white rounded-3xl">
+            <section className="md:px-8 p-5 md:p-3 md:py-8 bg-white rounded-xl">
               <header className="mb-4">
-                <h3 className="text-xl text-gray-700">Monthly Overview</h3>
+                <h1 className="text-xl text-gray-700">Monthly Overview</h1>
                 <p className="text-sm text-gray-600">
                   An overview of your financial activity in this month
                 </p>
@@ -192,6 +217,22 @@ const Home = () => {
           </main>
         </section>
       </div>
+
+      <Modal
+        closeAction={() => setShow(false)}
+        Component={
+          <Form
+            title={`Add New ${type}`}
+            all
+            btnText={`Add ${type}`}
+            type={type}
+            setType={setType}
+            closeAction={() => setShow(false)}
+            submitHandler={itemTypes[type].submitHandler}
+          />
+        }
+        isOpen={show}
+      />
     </div>
   );
 };

@@ -10,7 +10,14 @@ import {
   browserLocalPersistence,
 } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { collection, query, getDocs, where, setDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  getDocs,
+  where,
+  setDoc,
+  doc,
+} from "firebase/firestore";
 import { useRouter } from "next/router";
 
 const AuthContext = createContext();
@@ -20,18 +27,19 @@ export const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-
   const fetchUser = async (currentUser) => {
-    const q = query(collection(db, "users"), where("email", "==", currentUser?.email));
+    const q = query(
+      collection(db, "users"),
+      where("email", "==", currentUser?.email)
+    );
     const querySnapshot = await getDocs(q);
     if (querySnapshot.docs) {
       querySnapshot.forEach((doc) => {
         console.log(doc.id, " => ", doc.data());
         setUser({ ...doc.data(), id: doc.id });
-        router.replace('/')
+        router.replace("/");
       });
-    } 
-    toast.error("User does not exist.");
+    }
     setLoading(false);
   };
 
@@ -51,28 +59,30 @@ export const AuthContextProvider = ({ children }) => {
   const updateUsername = (displayName) =>
     updateProfile(auth.currentUser, { displayName });
 
-  const handleLogin = (email, password, username) => {
-    setPersistence(auth, browserLocalPersistence);
-    signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-        setLoading(true);
-        updateUsername(username);
-        getCurrentUser();
+  const handleLogin = (email, password) => {
+    setLoading(true);
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password).then(() => {
+          getCurrentUser();
+        });
       })
-
       .catch((error) => {
         setLoading(false);
-        router.redirect('/')
         toast.error(error.message);
       });
   };
 
   const handleSignUp = async (username, email, password, photoUrl = "") => {
+    setLoading(true);
     try {
       setPersistence(auth, browserLocalPersistence);
-      const response = await createUserWithEmailAndPassword(auth, email, password);
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const storedUser = response.user;
-      console.log("Hello", storedUser)
       if (storedUser) {
         setLoading(true);
         await updateUsername(username);
@@ -101,7 +111,6 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     getCurrentUser();
   }, []);
-
 
   const value = {
     user,

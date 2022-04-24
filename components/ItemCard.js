@@ -1,9 +1,7 @@
 import moment from "moment";
 import React, { useState } from "react";
-import DebtForm from "./Debt/DebtForm";
-import ExpenseForm from "./Expenses/ExpenseForm";
+import Form from "./Form";
 import { ArrowDown, ArrowUp, DebtIcon, DebtSvgIcon } from "./Icons";
-import IncomeForm from "./Income/IncomeForm";
 import Modal from "./UI/Modal";
 import ViewItemModal from "./ViewItemModal";
 
@@ -12,28 +10,35 @@ const ItemCard = ({ detail, itemType }) => {
   const closeAction = () => setActiveModal("");
   const props = {
     income: {
-      amount: "text-2xl font-bold text-green-700",
+      amount: " text-green-700",
       sign: "+",
       icon: <ArrowDown />,
-      form: <IncomeForm closeAction={closeAction} />,
+      form: (
+        <Form
+          closeAction={closeAction}
+          type="income"
+          title="Add New Income"
+          btnText="Add Income"
+        />
+      ),
       subText: `Created on: ${moment(detail?.date.toDate()).format(
         "DD/MM/YYYY"
       )}`,
     },
     expense: {
-      amount: `text-2xl font-bold text-pink-400`,
+      amount: `text-pink-400`,
       sign: "-",
       icon: <ArrowUp />,
-      form: <ExpenseForm closeAction={closeAction} />,
+      form: <Form closeAction={closeAction} type="expense" />,
       subText: `Created on: ${moment(detail?.date.toDate()).format(
         "DD/MM/YYYY"
       )}`,
     },
     debt: {
-      amount: `text-2xl font-bold text-gray-500`,
+      amount: `text-gray-500`,
       sign: "",
       icon: <DebtSvgIcon />,
-      form: <DebtForm closeAction={closeAction} />,
+      form: <Form closeAction={closeAction} />,
       subText: `${detail.owedByMe ? "Owed To: " : "Owed By: "} ${
         detail.personInvolved
       }`,
@@ -45,23 +50,23 @@ const ItemCard = ({ detail, itemType }) => {
   const Item = props[itemType];
   return (
     <>
-      <div className="mb-5 flex items-center sm:flex-row flex-col  justify-between text-white p-5 shadow-violet-100 bg-indigo-50 rounded-lg">
+      <div className="mb-5 flex md:items-center sm:flex-row flex-col  justify-between text-white p-5 shadow-violet-100 bg-indigo-50 rounded-lg">
         <div className="flex align-center gap-2 items-center">
           <div className="h-12 w-12 text-indigo-700 bg-white rounded-full place-content-center grid">
             {Item.icon}
           </div>
           <div>
-            <p className={Item.amount}>
+            <p className={`md:text-2xl text-xl font-bold ${Item.amount}`}>
               {Item.sign} &#8358; {detail?.amount}
             </p>
             <p className="text-sm text-indigo-600 capitalize">{Item.subText}</p>
           </div>
         </div>
 
-        <div className="flex sm:mt-0 mt-5">
+        <div className="flex sm:mt-0 mt-5 ">
           <button
             onClick={() => setActiveModal("edit")}
-            className="text-sm mr-3 flex p-3 font-bold bg-white rounded-md text-gray-900"
+            className="text-sm mr-3 flex-1 justify-center flex p-3 font-bold bg-white rounded-md text-gray-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +86,7 @@ const ItemCard = ({ detail, itemType }) => {
           </button>
           <button
             onClick={() => setActiveModal("view")}
-            className="text-sm p-3 border-solid border-2 border-indigo-500 font-bold bg-white flex rounded-md font-bold text-gray-900"
+            className="text-sm p-3 flex-1 justify-center border-solid border-2 border-indigo-500 font-bold bg-white flex rounded-md font-bold text-gray-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

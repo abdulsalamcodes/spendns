@@ -5,13 +5,13 @@ import AuthContext from "../../contexts/AuthContext";
 import MainContext from "../../contexts/MainContext";
 import ExpenseChart from "../Charts.js/ExpenseChart";
 import OverviewCard from "../Debt/OverviewCard";
+import Form from "../Form";
 import ItemCard from "../ItemCard";
 import Modal from "../UI/Modal";
-import ExpenseForm from "./ExpenseForm";
 
 const ExpensePage = () => {
   const [open, setOpen] = useState(false);
-  const { expenses, loadingData, total } = useContext(MainContext);
+  const { expenses, loadingData, total, addExpense } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
 
   return (
@@ -77,7 +77,14 @@ const ExpensePage = () => {
 
       <Modal
         closeAction={() => setOpen(false)}
-        Component={<ExpenseForm closeAction={() => setOpen(false)} />}
+        Component={
+          <Form
+            title="Add New Expense"
+            btnText="Add Expense"
+            closeAction={() => setOpen(false)}
+            submitHandler={addExpense}
+          />
+        }
         isOpen={open}
       />
     </>

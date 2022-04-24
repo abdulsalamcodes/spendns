@@ -6,12 +6,12 @@ import MainContext from "../../contexts/MainContext";
 import IncomeChart from "../Charts.js/IncomeChart";
 import Modal from "../UI/Modal";
 import ItemCard from "../ItemCard";
-import IncomeForm from "./IncomeForm";
 import OverviewCard from "../Debt/OverviewCard";
+import Form from "../Form";
 
 const IncomePage = () => {
   const [open, setOpen] = useState(false);
-  const { incomes, loadingData, total } = useContext(MainContext);
+  const { incomes, loadingData, total, addIncome } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
 
   return (
@@ -72,7 +72,14 @@ const IncomePage = () => {
 
       <Modal
         closeAction={() => setOpen(false)}
-        Component={<IncomeForm closeAction={() => setOpen(false)} />}
+        Component={
+          <Form
+            title="Add New Income"
+            btnText="Add Income"
+            closeAction={() => setOpen(false)}
+            submitHandler={addIncome}
+          />
+        }
         isOpen={open}
       />
     </>

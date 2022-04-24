@@ -3,15 +3,15 @@ import Link from "next/link";
 import Container from "../../hoc/Container";
 import Modal from "../../components/UI/Modal";
 import { BackIcon, PlusIcon } from "../../components/Icons";
-import DebtForm from "./DebtForm";
 import OverviewCard from "./OverviewCard";
 import MainContext from "../../contexts/MainContext";
 import AuthContext from "../../contexts/AuthContext";
 import ItemCard from "../ItemCard";
+import Form from "../Form";
 
 const DebtPage = () => {
   const [open, setOpen] = useState(false);
-  const { debts, loadingData, total } = useContext(MainContext);
+  const { debts, loadingData, total, addDebt } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("All");
   const TabButton = ({ text }) => (
@@ -51,8 +51,16 @@ const DebtPage = () => {
         </header>
 
         <section className="sm:flex gap-4 flex-wrap mt-4 ">
-          <OverviewCard title="OWE ME" peopleCount={5} totalPrice={total.debtOwed} />
-          <OverviewCard title="OWE" peopleCount={5} totalPrice={total.debtOwedByMe} />
+          <OverviewCard
+            title="OWE ME"
+            peopleCount={5}
+            totalPrice={total.debtOwed}
+          />
+          <OverviewCard
+            title="OWE"
+            peopleCount={5}
+            totalPrice={total.debtOwedByMe}
+          />
         </section>
 
         <section className="mt-10">
@@ -71,7 +79,7 @@ const DebtPage = () => {
                 Debt List Empty! 🎉
               </div>
             ) : (
-              debts?.map((debt, i) => (
+              debts?.map((debt, idx) => (
                 <ItemCard key={idx} detail={debt} itemType="debt" />
               ))
             )}
@@ -82,7 +90,15 @@ const DebtPage = () => {
       {/* Modals */}
       <Modal
         closeAction={() => setOpen(false)}
-        Component={<DebtForm closeAction={() => setOpen(false)} />}
+        Component={
+          <Form
+            title="Add New Debt"
+            btnText="Add Debt"
+            type="debt"
+            closeAction={() => setOpen(false)}
+            submitHandler={addDebt}
+          />
+        }
         isOpen={open}
       />
     </Container>
