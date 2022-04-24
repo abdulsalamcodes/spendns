@@ -44,7 +44,7 @@ const ExpensePage = () => {
           <OverviewCard
             entryCount={expenses.length}
             totalPrice={total.expenses}
-            å
+            title="Expenses"
           />
         </section>
         <main>
@@ -61,7 +61,7 @@ const ExpensePage = () => {
                 .map((expense) => (
                   <ItemCard
                     expense
-                    key={expense.title}
+                    key={expense.id}
                     detail={expense}
                     itemType="expense"
                   />
@@ -79,8 +79,7 @@ const ExpensePage = () => {
         closeAction={() => setOpen(false)}
         Component={
           <Form
-            title="Add New Expense"
-            btnText="Add Expense"
+            type="expense"
             closeAction={() => setOpen(false)}
             submitHandler={addExpense}
           />

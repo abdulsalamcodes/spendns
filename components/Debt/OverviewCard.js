@@ -8,7 +8,7 @@ const OverviewCard = ({ title, entryCount, totalPrice }) => {
         {title}
       </small>
       <div className="flex items-center text-white text-xl md:text-2xl gap-5 mt-2">
-        <p className="font-bold">Total Price:</p>
+        <p className="font-bold">{`Total ${title}:`}</p>
         <p>
           &#8358; {totalPrice}
           <span className="text-lg ml-2 bold">({entryCount} entries)</span>

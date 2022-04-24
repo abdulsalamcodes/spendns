@@ -52,12 +52,12 @@ const DebtPage = () => {
 
         <section className="sm:flex gap-4 flex-wrap mt-4 ">
           <OverviewCard
-            title="OWE ME"
+            title="OWED"
             peopleCount={5}
             totalPrice={total.debtOwed}
           />
           <OverviewCard
-            title="OWE"
+            title="OWING"
             peopleCount={5}
             totalPrice={total.debtOwedByMe}
           />
@@ -79,8 +79,8 @@ const DebtPage = () => {
                 Debt List Empty! 🎉
               </div>
             ) : (
-              debts?.map((debt, idx) => (
-                <ItemCard key={idx} detail={debt} itemType="debt" />
+              debts?.map((debt) => (
+                <ItemCard key={debt.id} detail={debt} itemType="debt" />
               ))
             )}
           </main>

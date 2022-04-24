@@ -3,7 +3,7 @@ import React from "react";
 import { modalWrapperStyle } from "./commonStyles";
 import Button from "./UI/Button";
 
-const ViewItemModal = ({ icon, detail, onClick }) => {
+const ViewItemModal = ({ icon, detail, onClose, deleteAction }) => {
   return (
     <div className={`${modalWrapperStyle} mx-6 p-8 `}>
       <header className="flex items-center gap-3">
@@ -26,10 +26,16 @@ const ViewItemModal = ({ icon, detail, onClick }) => {
       </main>
 
       <div className="flex items-center grid grid-cols-2 ">
-        <Button onClick={onClick} variant="danger">
+        <Button
+          onClick={() => {
+            deleteAction(detail);
+            onClose();
+          }}
+          variant="danger"
+        >
           Delete
         </Button>
-        <Button onClick={onClick} variant="primary">
+        <Button onClick={onClose} variant="primary">
           Close
         </Button>
       </div>

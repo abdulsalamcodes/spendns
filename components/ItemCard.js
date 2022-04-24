@@ -1,5 +1,6 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import MainContext from "../contexts/MainContext";
 import Form from "./Form";
 import { ArrowDown, ArrowUp, DebtIcon, DebtSvgIcon } from "./Icons";
 import Modal from "./UI/Modal";
@@ -7,20 +8,16 @@ import ViewItemModal from "./ViewItemModal";
 
 const ItemCard = ({ detail, itemType }) => {
   const [activeModal, setActiveModal] = useState("");
+  const { deleteExpense, deleteIncome, deleteDebt, updateDebt } =
+    useContext(MainContext);
   const closeAction = () => setActiveModal("");
   const props = {
     income: {
       amount: " text-green-700",
       sign: "+",
       icon: <ArrowDown />,
-      form: (
-        <Form
-          closeAction={closeAction}
-          type="income"
-          title="Add New Income"
-          btnText="Add Income"
-        />
-      ),
+      deleteAction: deleteIncome,
+      form: <Form closeAction={closeAction} type="income" detail={detail} />,
       subText: `Created on: ${moment(detail?.date.toDate()).format(
         "DD/MM/YYYY"
       )}`,
@@ -28,8 +25,9 @@ const ItemCard = ({ detail, itemType }) => {
     expense: {
       amount: `text-pink-400`,
       sign: "-",
+      deleteAction: deleteExpense,
       icon: <ArrowUp />,
-      form: <Form closeAction={closeAction} type="expense" />,
+      form: <Form closeAction={closeAction} type="expense" detail={detail} />,
       subText: `Created on: ${moment(detail?.date.toDate()).format(
         "DD/MM/YYYY"
       )}`,
@@ -37,8 +35,16 @@ const ItemCard = ({ detail, itemType }) => {
     debt: {
       amount: `text-gray-500`,
       sign: "",
+      deleteAction: deleteDebt,
       icon: <DebtSvgIcon />,
-      form: <Form closeAction={closeAction} />,
+      form: (
+        <Form
+          closeAction={closeAction}
+          type="debt"
+          detail={detail}
+          submitHandler={updateDebt}
+        />
+      ),
       subText: `${detail.owedByMe ? "Owed To: " : "Owed By: "} ${
         detail.personInvolved
       }`,
@@ -111,7 +117,8 @@ const ItemCard = ({ detail, itemType }) => {
         closeAction={() => setActiveModal("")}
         Component={
           <ViewItemModal
-            onClick={closeAction}
+            onClose={closeAction}
+            deleteAction={Item.deleteAction}
             detail={detail}
             icon={Item.icon}
           />

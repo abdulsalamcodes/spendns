@@ -6,19 +6,20 @@ import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 
 const Form = (props) => {
-  const { title, closeAction, btnText, submitHandler, type, all, setType } =
-    props;
+  const { closeAction, submitHandler, type, all, setType, detail } = props;
   const [owedByMe, setOwedByMe] = useState(false);
   const toggleClass = " transform translate-x-6";
-  const initialValue = {
-    id: uuidv4(),
-    note: "",
-    amount: 2000,
-    date: new Date(),
-  };
+  const initialValue = detail
+    ? detail
+    : {
+        id: uuidv4(),
+        note: "",
+        amount: "",
+        date: new Date(),
+      };
   const { formFields, createChangeHandler } = useFormFields(initialValue);
   const debtSpecificData = {
-    personInvolved: "",
+    personInvolved: formFields.personInvolved,
     settled: false,
     owedByMe,
   };
@@ -58,8 +59,8 @@ const Form = (props) => {
       aria-labelledby="modal-headline"
     >
       <header>
-        <h3 className="text-center font-bold text-xl text-indigo-900">
-          {title}
+        <h3 className="text-center font-bold text-xl text-indigo-900 capitalize">
+          {`${detail ? "Update" : "Add New"} ${type}`}
         </h3>
       </header>
       {all ? (
@@ -108,7 +109,7 @@ const Form = (props) => {
         />
         <InputField
           title="Text/Note:"
-          value={formFields.notes}
+          value={formFields.note}
           onChange={createChangeHandler("note")}
           placeholder={`Add some text/notes about this ${type}`}
         />
@@ -118,7 +119,7 @@ const Form = (props) => {
           <i className="fas fa-times" /> Cancel
         </Button>
         <Button variant="primary" onClick={submitForm}>
-          <i className="fas fa-plus" /> {btnText}
+          <i className="fas fa-plus" /> {`${detail ? "Update" : "Add"} ${type}`}
         </Button>
       </footer>
     </section>

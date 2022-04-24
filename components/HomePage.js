@@ -166,11 +166,7 @@ const Home = () => {
               incomes
                 ?.filter((_, i) => i < 2)
                 .map((income) => (
-                  <ItemCard
-                    key={income.date}
-                    detail={income}
-                    itemType="income"
-                  />
+                  <ItemCard key={income.id} detail={income} itemType="income" />
                 ))
             ) : (
               <div className="text-sm text-gray-500 ">
@@ -188,7 +184,7 @@ const Home = () => {
                 .map((expense) => (
                   <ItemCard
                     expense
-                    key={expense.date}
+                    key={expense.id}
                     detail={expense}
                     itemType="expense"
                   />
@@ -206,8 +202,8 @@ const Home = () => {
             {debts?.length > 0 ? (
               debts
                 ?.filter((_, i) => i < 2)
-                .map((debt, idx) => (
-                  <ItemCard key={idx} detail={debt} itemType="debt" />
+                .map((debt) => (
+                  <ItemCard key={debt.id} detail={debt} itemType="debt" />
                 ))
             ) : (
               <div className="text-sm text-gray-500 ">
