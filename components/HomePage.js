@@ -123,10 +123,10 @@ const Home = () => {
           <button
             onClick={() => setShow(true)}
             type="button"
-            className="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-pink-500 hover:to-yellow-500 text-white p-2 rounded flex gap-2 items-center"
+            className="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-pink-500 hover:to-yellow-500 text-white p-2 rounded-full xs:rounded mx-2 flex gap-2 items-center"
           >
             <PlusIcon size="4" />
-            <span> Add New</span>
+            <span className="hidden xs:block"> Add New</span>
           </button>
           <Dropdown />
         </div>
