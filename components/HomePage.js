@@ -186,25 +186,25 @@ const Home = () => {
                 <div className="flex mb-2 justify-between align-center capitalize">
                   <p>Total Income:</p>
                   <p className="font-black underline decoration-sky-500">
-                    &#8358;{total.incomes}
+                    &#8358;{Number(total.incomes).toLocaleString()}
                   </p>
                 </div>
                 <div className="flex mb-2 justify-between align-center capitalize">
                   <p>Total Expenses:</p>
                   <p className="font-black underline decoration-pink-500">
-                    &#8358; {total.expenses}
+                    &#8358; {Number(total.expenses).toLocaleString()}
                   </p>
                 </div>
                 <div className="flex mb-2 justify-between align-center capitalize">
                   <p>Total Debt Owed: To Me:</p>
                   <p className="font-black underline decoration-yellow-500">
-                    &#8358; {total.debtOwed}
+                    &#8358; {Number(total.debtOwed).toLocaleString()}
                   </p>
                 </div>
                 <div className="flex mb-2 justify-between align-center capitalize">
                   <p>Total Debt Owed By Me:</p>
                   <p className="font-black underline decoration-green-300">
-                    &#8358; {total.debtOwedByMe}
+                    &#8358; {Number(total.debtOwedByMe).toLocaleString()}
                   </p>
                 </div>
               </div>

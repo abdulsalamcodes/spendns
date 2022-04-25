@@ -74,8 +74,7 @@ const IncomePage = () => {
         closeAction={() => setOpen(false)}
         Component={
           <Form
-            title="Add New Income"
-            btnText="Add Income"
+            type="income"
             closeAction={() => setOpen(false)}
             submitHandler={addIncome}
           />

@@ -37,10 +37,12 @@ const Form = (props) => {
   const SwitchInput = () => (
     <div className="mt-4 mb-2 flex items-center max-w-xs w-11/12 ">
       <div className="font-semibold text-indigo-800 text-sm mr-2">
-        Owed By Me:
+        Owed To Me:
       </div>
       <div
-        className="md:w-14 md:h-8 w-12 flex items-center bg-gray-200 rounded-full p-1 cursor-pointer"
+        className={`md:w-14 md:h-8 w-12 flex items-center ${
+          !owedByMe ? "bg-gray-200" : "bg-indigo-200"
+        } rounded-full p-1 cursor-pointer`}
         onClick={() => setOwedByMe(!owedByMe)}
       >
         <div
@@ -50,6 +52,9 @@ const Form = (props) => {
             !owedByMe ? null : toggleClass
           }`}
         ></div>
+      </div>
+      <div className="font-semibold text-indigo-800 text-sm ml-2">
+        Owed By Me:
       </div>
     </div>
   );

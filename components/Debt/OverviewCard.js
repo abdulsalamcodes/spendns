@@ -10,7 +10,7 @@ const OverviewCard = ({ title, entryCount, totalPrice }) => {
       <div className="flex items-center justify-between text-white text-xl md:text-2xl mt-2">
         <p className="font-bold">{`Total ${title}:`}</p>
         <p>
-          &#8358; {totalPrice}
+          &#8358; {Number(totalPrice).toLocaleString()}
           <span className="text-lg ml-2 bold">({entryCount} entries)</span>
         </p>
       </div>
