@@ -21,10 +21,8 @@ const Dropdown = () => {
     router.replace("/login");
   };
   return (
-    <div>
-      {/* <div className="relative cursor-pointer text-sm focus:outline-none group w-full"> */}
-      <LinkItem icon={<LogoutIcon />} text="Logout" action={logOut} />
-      {/* <div className="flex items-center justify-between px-4">
+    <div className="relative cursor-pointer text-sm focus:outline-none group w-full">
+      <div className="flex items-center justify-between px-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6"
@@ -39,10 +37,19 @@ const Dropdown = () => {
             d="M4 6h16M4 12h16m-7 6h7"
           />
         </svg>
-      </div> */}
+      </div>
       <div className="absolute z-10 right-8 flex-col rounded-md items-start hidden w-32 pb-1 bg-white shadow-lg group-hover:flex">
-        {/* <LinkItem icon={<NotificationIcon />} text="Notifications" action={() => console.log('notifications')} />
-        <LinkItem icon={<SettingsIcon />} text="Settings" action={() => console.log('settings')} /> */}
+        {/* <LinkItem
+          icon={<NotificationIcon />}
+          text="Notifications"
+          action={() => console.log("notifications")}
+        />
+        <LinkItem
+          icon={<SettingsIcon />}
+          text="Settings"
+          action={() => console.log("settings")}
+        /> */}
+        <LinkItem icon={<LogoutIcon />} text="Logout" action={logOut} />
       </div>
     </div>
   );

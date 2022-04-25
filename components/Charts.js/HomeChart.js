@@ -18,7 +18,7 @@ const HomeChart = () => {
   const { total } = useContext(MainContext);
 
   const data = {
-    labels: ["Expenses", "Incomes", "Debt Owned", "Debt own by me"],
+    labels: ["Expenses", "Incomes", "Debt Owed To Me", "Debt owed by me"],
     datasets: [
       {
         label: "# of Votes",

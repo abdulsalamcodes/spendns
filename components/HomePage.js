@@ -98,7 +98,7 @@ const Home = () => {
   return (
     <div className="max-w-4xl m-auto relative">
       {/* header profile */}
-      <header className="flex justify-between p-4 px-7">
+      <header className="flex justify-between gap-2 p-4 px-7">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 bg-gradient-to-r from-sky-500 to-indigo-900 rounded-xl place-content-center grid">
             <svg
@@ -123,10 +123,10 @@ const Home = () => {
           <button
             onClick={() => setShow(true)}
             type="button"
-            className="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-pink-500 hover:to-yellow-500 text-white p-2 rounded-full xs:rounded mx-2 flex gap-2 items-center"
+            className="bg-gradient-to-r flex-1 from-indigo-500 to-blue-500 hover:from-pink-500 hover:to-yellow-500 text-white p-2 rounded flex gap-2 items-center"
           >
-            <PlusIcon size="4" />
-            <span className="hidden xs:block"> Add New</span>
+            <PlusIcon size="5" />
+            <p style={{ whiteSpace: "nowrap" }}>Add New</p>
           </button>
           <Dropdown />
         </div>
@@ -185,19 +185,27 @@ const Home = () => {
               <div className="text-gray-600">
                 <div className="flex mb-2 justify-between align-center">
                   <p>Total Income:</p>
-                  <p>&#8358;{total.incomes}</p>
+                  <p className="font-black underline decoration-sky-500">
+                    &#8358;{total.incomes}
+                  </p>
                 </div>
                 <div className="flex mb-2 justify-between align-center">
                   <p>Total Expenses:</p>
-                  <p>&#8358; {total.expenses}</p>
+                  <p className="font-black underline decoration-pink-500">
+                    &#8358; {total.expenses}
+                  </p>
                 </div>
                 <div className="flex mb-2 justify-between align-center">
-                  <p>Total Debt Owed:</p>
-                  <p>&#8358; {total.debtOwed}</p>
+                  <p>Total Debt Owed: To Me</p>
+                  <p className="font-black underline decoration-yellow-500">
+                    &#8358; {total.debtOwed}
+                  </p>
                 </div>
                 <div className="flex mb-2 justify-between align-center">
                   <p>Total Debt Owed by me:</p>
-                  <p>&#8358; {total.debtOwedByMe}</p>
+                  <p className="font-black underline decoration-green-300">
+                    &#8358; {total.debtOwedByMe}
+                  </p>
                 </div>
               </div>
             </section>

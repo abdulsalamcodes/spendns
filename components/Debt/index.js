@@ -16,8 +16,8 @@ const DebtPage = () => {
   const [activeTab, setActiveTab] = useState("all");
   const tabContents = {
     all: debts,
-    oweMe: debts.filter((debt) => debt.owedByMe),
-    owing: debts.filter((debt) => !debt.owedByMe),
+    oweMe: debts.filter((debt) => !debt.owedByMe),
+    owing: debts.filter((debt) => debt.owedByMe),
     cleared: debts.filter((debt) => debt.settled),
   };
   const TabButton = ({ text, id }) => (
@@ -58,12 +58,12 @@ const DebtPage = () => {
 
         <section className="sm:flex gap-4 flex-wrap mt-4 ">
           <OverviewCard
-            title="OWED"
+            title="OWED TO ME"
             peopleCount={5}
             totalPrice={total.debtOwed}
           />
           <OverviewCard
-            title="OWING"
+            title="OWED BY ME"
             peopleCount={5}
             totalPrice={total.debtOwedByMe}
           />
@@ -72,8 +72,8 @@ const DebtPage = () => {
         <section className="mt-10">
           <header className="border-b-2 flex items-end gap-5 w-full mb-3 ">
             <TabButton text="All" id="all" />
-            <TabButton text="Owe Me" id="oweMe" />
-            <TabButton text="Owe" id="owing" />
+            <TabButton text="Owe To Me" id="oweMe" />
+            <TabButton text="Owe By Me" id="owing" />
             <TabButton text="Cleared Debt" id="cleared" />
           </header>
 

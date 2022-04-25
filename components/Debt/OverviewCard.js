@@ -7,7 +7,7 @@ const OverviewCard = ({ title, entryCount, totalPrice }) => {
       <small className="text-white font-mono font-bold underline underline-offset-4">
         {title}
       </small>
-      <div className="flex items-center text-white text-xl md:text-2xl gap-5 mt-2">
+      <div className="flex items-center justify-between text-white text-xl md:text-2xl mt-2">
         <p className="font-bold">{`Total ${title}:`}</p>
         <p>
           &#8358; {totalPrice}
