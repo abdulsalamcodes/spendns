@@ -35,7 +35,7 @@ const Form = (props) => {
   };
 
   const SwitchInput = () => (
-    <div className="mt-4 mb-2 flex items-center ">
+    <div className="mt-4 mb-2 flex items-center max-w-xs w-11/12 ">
       <div className="font-semibold text-indigo-800 text-sm mr-2">
         Owed By Me:
       </div>

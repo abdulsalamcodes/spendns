@@ -13,12 +13,18 @@ const DebtPage = () => {
   const [open, setOpen] = useState(false);
   const { debts, loadingData, total, addDebt } = useContext(MainContext);
   const { loading } = useContext(AuthContext);
-  const [activeTab, setActiveTab] = useState("All");
-  const TabButton = ({ text }) => (
+  const [activeTab, setActiveTab] = useState("all");
+  const tabContents = {
+    all: debts,
+    oweMe: debts.filter((debt) => debt.owedByMe),
+    owing: debts.filter((debt) => !debt.owedByMe),
+    cleared: debts.filter((debt) => debt.settled),
+  };
+  const TabButton = ({ text, id }) => (
     <button
-      onClick={() => setActiveTab(text)}
+      onClick={() => setActiveTab(id)}
       className={`${
-        activeTab === text && "bg-indigo-500 text-white px-4"
+        activeTab === id && "bg-indigo-500 text-white px-4"
       } items-center flex text-sm cursor-pointer py-2 border-b-1  hover:border-b-violet-600`}
     >
       {text}
@@ -65,21 +71,22 @@ const DebtPage = () => {
 
         <section className="mt-10">
           <header className="border-b-2 flex items-end gap-5 w-full mb-3 ">
-            <TabButton text="All" />
-            <TabButton text="Owe Me" />
-            <TabButton text="Owe" />
-            <TabButton text="Cleared Debt" />
+            <TabButton text="All" id="all" />
+            <TabButton text="Owe Me" id="oweMe" />
+            <TabButton text="Owe" id="owing" />
+            <TabButton text="Cleared Debt" id="cleared" />
           </header>
 
           <main className=" gap-4">
             {loading || loadingData ? (
               <p className="text-center text-sm text-gray-600">Loading...</p>
-            ) : !debts.length || debts.length === 0 ? (
-              <div className="bg-white font-bold p-4 w-full text-center m-auto shadow-md rounded-lg text-green-500">
-                Debt List Empty! 🎉
+            ) : !tabContents[activeTab].length ||
+              tabContents[activeTab].length === 0 ? (
+              <div className="text-sm text-gray-500 ">
+                List empty, you&apos;ve got no worries📿
               </div>
             ) : (
-              debts?.map((debt) => (
+              tabContents[activeTab]?.map((debt) => (
                 <ItemCard key={debt.id} detail={debt} itemType="debt" />
               ))
             )}

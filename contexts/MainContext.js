@@ -19,7 +19,7 @@ export const MainContextProvider = ({ children }) => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [loadingData, setLoading] = useState(false);
-  const currentMonth = new Date().getMonth();
+  const [monthFilter, setMonthFilter] = useState(new Date().getMonth());
   const [total, setTotal] = useState({
     debtOwedByMe: 0,
     incomes: 0,
@@ -152,26 +152,10 @@ export const MainContextProvider = ({ children }) => {
         }, 0);
     setTotal((prev) => ({
       ...prev,
-      incomes: sum(
-        incomes.filter((item) => item.date.toDate().getMonth() === currentMonth)
-      ),
-      debtOwed: sum(
-        debts.filter(
-          (debt) =>
-            !debt.owedByMe && debt.date.toDate().getMonth() === currentMonth
-        )
-      ),
-      debtOwedByMe: sum(
-        debts.filter(
-          (debt) =>
-            debt.owedByMe && debt.date.toDate().getMonth() === currentMonth
-        )
-      ),
-      expenses: sum(
-        expenses.filter(
-          (item) => item.date.toDate().getMonth() === currentMonth
-        )
-      ),
+      incomes: sum(incomes),
+      debtOwed: sum(debts.filter((debt) => !debt.owedByMe)),
+      debtOwedByMe: sum(debts.filter((debt) => debt.owedByMe)),
+      expenses: sum(expenses),
     }));
   }, [incomes, debts, expenses]);
 
@@ -204,6 +188,8 @@ export const MainContextProvider = ({ children }) => {
     deleteIncome,
     deleteDebt,
     update,
+    setMonthFilter,
+    monthFilter,
   };
   return <MainContext.Provider value={value}>{children}</MainContext.Provider>;
 };

@@ -1,12 +1,11 @@
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import AuthContext from "../contexts/AuthContext";
 import HomeChart from "./Charts.js/HomeChart";
 import Dropdown from "./Dropdown";
 import { PlusIcon, UserIcon } from "./Icons";
 import ItemCard from "./ItemCard";
 import MainContext from "../contexts/MainContext";
-import Container from "../hoc/Container";
 import Modal from "./UI/Modal";
 import Form from "./Form";
 
@@ -56,10 +55,33 @@ const SectionHeader = ({ title, path }) => (
 
 const Home = () => {
   const user = useContext(AuthContext).user;
-  const { debts, incomes, expenses, total, addExpense, addIncome, addDebt } =
-    useContext(MainContext);
+  const {
+    debts,
+    incomes,
+    expenses,
+    total,
+    addExpense,
+    addIncome,
+    addDebt,
+    monthFilter,
+    setMonthFilter,
+  } = useContext(MainContext);
   const [show, setShow] = useState(false);
   const [type, setType] = useState("income");
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ].slice(0, new Date().getMonth() + 1);
 
   const itemTypes = {
     income: {
@@ -112,7 +134,7 @@ const Home = () => {
       {/* top overview */}
       <section className="mt-5 px-7">
         <div className="min-h-80 p-6  md:p-4 w-full rounded-xl bg-gradient-to-r from-sky-100 shadow-sm to-indigo-100">
-          <div className="flex flex-center gap-2">
+          <section className="flex flex-center gap-2">
             <div className="h-12 w-12 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full place-content-center grid">
               <UserIcon />
             </div>
@@ -122,7 +144,31 @@ const Home = () => {
                 {user?.username}
               </p>
             </div>
-          </div>
+
+            {/* <div className="ml-auto mr-6">
+              <label htmlFor="month" className="text-md mr-3">
+                Choose a Month:
+              </label>
+
+              <select
+                name="months"
+                id="month"
+                onChange={(e) => setMonthFilter(e.target.value)}
+                className="p-2 outline-none cursor-pointer"
+              >
+                {months.map((month, idx) => (
+                  <option
+                    className="text-xs"
+                    selected={idx === monthFilter}
+                    key={month}
+                    value={idx}
+                  >
+                    {month}
+                  </option>
+                ))}
+              </select>
+            </div> */}
+          </section>
           <div className="md:flex items-center gap-2">
             <div className="mt-5 md:h-1/2 md:w-1/2 mb-5 md:mb-0 ">
               <HomeChart />
@@ -132,7 +178,8 @@ const Home = () => {
               <header className="mb-4">
                 <h1 className="text-xl text-gray-700">Monthly Overview</h1>
                 <p className="text-sm text-gray-600">
-                  An overview of your financial activity in this month
+                  An overview of your financial activity in{" "}
+                  {months[monthFilter]}
                 </p>
               </header>
               <div className="text-gray-600">
@@ -201,7 +248,7 @@ const Home = () => {
           <main>
             {debts?.length > 0 ? (
               debts
-                ?.filter((_, i) => i < 2)
+                ?.filter((debt, i) => i < 2 && !debt.settled)
                 .map((debt) => (
                   <ItemCard key={debt.id} detail={debt} itemType="debt" />
                 ))
