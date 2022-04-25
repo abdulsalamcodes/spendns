@@ -183,26 +183,26 @@ const Home = () => {
                 </p>
               </header>
               <div className="text-gray-600">
-                <div className="flex mb-2 justify-between align-center">
+                <div className="flex mb-2 justify-between align-center capitalize">
                   <p>Total Income:</p>
                   <p className="font-black underline decoration-sky-500">
                     &#8358;{total.incomes}
                   </p>
                 </div>
-                <div className="flex mb-2 justify-between align-center">
+                <div className="flex mb-2 justify-between align-center capitalize">
                   <p>Total Expenses:</p>
                   <p className="font-black underline decoration-pink-500">
                     &#8358; {total.expenses}
                   </p>
                 </div>
-                <div className="flex mb-2 justify-between align-center">
-                  <p>Total Debt Owed: To Me</p>
+                <div className="flex mb-2 justify-between align-center capitalize">
+                  <p>Total Debt Owed: To Me:</p>
                   <p className="font-black underline decoration-yellow-500">
                     &#8358; {total.debtOwed}
                   </p>
                 </div>
-                <div className="flex mb-2 justify-between align-center">
-                  <p>Total Debt Owed by me:</p>
+                <div className="flex mb-2 justify-between align-center capitalize">
+                  <p>Total Debt Owed By Me:</p>
                   <p className="font-black underline decoration-green-300">
                     &#8358; {total.debtOwedByMe}
                   </p>
