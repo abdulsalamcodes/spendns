@@ -13,7 +13,7 @@ const Login = () => {
     if (user) {
       router.replace("/");
     }
-  });
+  }, []);
 
   return (
     <>
