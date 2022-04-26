@@ -35,9 +35,8 @@ export const AuthContextProvider = ({ children }) => {
     const querySnapshot = await getDocs(q);
     if (querySnapshot.docs) {
       querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
         setUser({ ...doc.data(), id: doc.id });
-        router.replace("/");
+        router.push("/");
       });
     }
     setLoading(false);
@@ -45,15 +44,20 @@ export const AuthContextProvider = ({ children }) => {
 
   const getCurrentUser = () => {
     setLoading(true);
-    onAuthStateChanged(auth, (authenticatedUser) => {
-      if (authenticatedUser) {
-        fetchUser(authenticatedUser);
-      } else {
-        setUser(null);
-        setLoading(false);
-        auth.signOut();
-      }
-    });
+    if (user) {
+      setLoading(false);
+      router.push("/");
+    } else {
+      onAuthStateChanged(auth, (authenticatedUser) => {
+        if (authenticatedUser) {
+          fetchUser(authenticatedUser);
+        } else {
+          setUser(null);
+          setLoading(false);
+          auth.signOut();
+        }
+      })
+    }
   };
 
   const updateUsername = (displayName) =>

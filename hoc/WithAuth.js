@@ -2,16 +2,17 @@
 import React, { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import AuthContext from "../contexts/AuthContext";
+import Loader from "../components/UI/Loader";
 
 const WithAuth = (Component) => (props) => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const router = useRouter();
 
   useEffect(() => {
     if (!user) {
-      router.replace("/login");
+      router.push("/login");
     }
-  }, [user]);
+  }, [user, router]);
 
   const renderPage = () => (
     <>
@@ -19,13 +20,9 @@ const WithAuth = (Component) => (props) => {
     </>
   );
 
-  const renderLoader = () => (
-    <div className="main-loader">
-      <div className="">Loading...</div>
-    </div>
-  );
+  const renderLoader = () => <Loader />;
 
-  if (typeof window === "undefined") {
+  if (typeof window === "undefined" || loading) {
     return renderLoader();
   }
 

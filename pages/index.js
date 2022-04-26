@@ -4,6 +4,7 @@ import HomePage from "../components/HomePage";
 import withAuth from "../hoc/WithAuth";
 
 const Home = () => {
+  
   return (
     <div className="">
       <Head>
