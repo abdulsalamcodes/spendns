@@ -7,19 +7,11 @@ const OverviewCard = ({ title, entryCount, totalPrice }) => {
       <small className="text-white font-mono font-bold underline underline-offset-4">
         {title}
       </small>
-<<<<<<< HEAD
-      <div className="flex items-center justify-between text-white text-xl md:text-2xl mt-2">
-        <p className="font-bold">{`Total ${title}:`}</p>
-        <p>
-          &#8358; {Number(totalPrice).toLocaleString()}
-          <span className="text-lg ml-2 bold">({entryCount} entries)</span>
-=======
       <div className="flex items-center justify-between text-white text-xl md:text-xl mt-2">
         <p className="font-bold">{`Total ${title}:`}</p>
         <p>
           &#8358; {Number(totalPrice).toLocaleString()}
           <span className="text-md ml-2 bold">({entryCount} entries)</span>
->>>>>>> bc40291 (fix: ui fixes)
         </p>
       </div>
       <p className="text-xs text-red-50 mt-2 gap-1 flex items-center">
