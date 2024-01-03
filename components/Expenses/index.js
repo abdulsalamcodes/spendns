@@ -16,7 +16,7 @@ const ExpensePage = () => {
 
   return (
     <>
-      <div className="p-5 max-w-4xl m-auto">
+      <div className="p-5 max-w-6xl m-auto">
         <div className="flex justify-between ">
           <div className="flex items-center gap-2">
             <Link href="/">

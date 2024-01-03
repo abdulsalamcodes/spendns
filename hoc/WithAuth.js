@@ -8,11 +8,11 @@ const WithAuth = (Component) => (props) => {
   const { user, loading } = useContext(AuthContext);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [user, router]);
+  // useEffect(() => {
+  //   if (!user && !loading) {
+  //     router.push("/login");
+  //   }
+  // }, [user, router]);
 
   const renderPage = () => (
     <>

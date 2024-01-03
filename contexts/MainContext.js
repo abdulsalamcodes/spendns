@@ -150,14 +150,20 @@ export const MainContextProvider = ({ children }) => {
         .reduce((a, b) => {
           return a + b;
         }, 0);
+
+    console.log(
+      "debts",
+      debts.map((el) => new Date(el.date.toDate()).getMonth()),
+      monthFilter
+    );
     setTotal((prev) => ({
       ...prev,
       incomes: sum(incomes),
-      debtOwed: sum(debts.filter((debt) => !debt.owedByMe)),
-      debtOwedByMe: sum(debts.filter((debt) => debt.owedByMe)),
+      debtOwed: sum(debts.filter((debt) => !debt.owedByMe && !debt.settled)),
+      debtOwedByMe: sum(debts.filter((debt) => debt.owedByMe && !debt.settled)),
       expenses: sum(expenses),
     }));
-  }, [incomes, debts, expenses]);
+  }, [incomes, debts, expenses, monthFilter]);
 
   useEffect(() => {
     // update on snapshot.

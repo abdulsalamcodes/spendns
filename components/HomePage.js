@@ -96,7 +96,7 @@ const Home = () => {
   };
 
   return (
-    <div className="max-w-4xl m-auto relative">
+    <div className="max-w-6xl m-auto relative">
       {/* header profile */}
       <header className="flex justify-between gap-2 p-4 px-7">
         <div className="flex items-center gap-2">
@@ -169,7 +169,7 @@ const Home = () => {
               </select>
             </div> */}
           </section>
-          <div className="md:flex items-center gap-2">
+          <div className="md:flex justify-between items-center gap-2">
             <div className="mt-5 md:h-1/2 md:w-1/2 mb-5 md:mb-0 ">
               <HomeChart />
             </div>
@@ -245,7 +245,7 @@ const Home = () => {
                   />
                 ))
             ) : (
-              <div className="text-sm text-gray-500 ">
+              <div className="text-sm text-gray-500">
                 Free born, no expenses🚀
               </div>
             )}
@@ -256,7 +256,7 @@ const Home = () => {
           <main>
             {debts?.length > 0 ? (
               debts
-                ?.filter((debt, i) => i < 2 && !debt.settled)
+                ?.filter((debt, i) => i < 2)
                 .map((debt) => (
                   <ItemCard key={debt.id} detail={debt} itemType="debt" />
                 ))

@@ -39,7 +39,7 @@ const Dropdown = () => {
         </svg>
       </div>
       <div className="absolute z-10 right-8 flex-col rounded-md items-start hidden w-32 pb-1 bg-white shadow-lg group-hover:flex">
-        {/* <LinkItem
+        <LinkItem
           icon={<NotificationIcon />}
           text="Notifications"
           action={() => console.log("notifications")}
@@ -48,7 +48,7 @@ const Dropdown = () => {
           icon={<SettingsIcon />}
           text="Settings"
           action={() => console.log("settings")}
-        /> */}
+        />
         <LinkItem icon={<LogoutIcon />} text="Logout" action={logOut} />
       </div>
     </div>

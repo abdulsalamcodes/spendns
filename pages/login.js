@@ -5,15 +5,13 @@ import Loader from "../components/UI/Loader";
 import AuthContext from "../contexts/AuthContext";
 
 const Login = () => {
-  const { loading } = useContext(AuthContext);
-
   return (
     <>
       <Head>
         <title>Spendns</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {(loading) ? <Loader /> : <AuthPage />}
+      <AuthPage />
     </>
   );
 };

@@ -33,10 +33,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div
-      className="flex items-center justify-center min-h-screen bg-purple-500 md:p-12
-    bg-gradient-to-r from-sky-500 to-indigo-500"
-    >
+    <div className="flex items-center justify-center h-screen w-screen overflow-hidden bg-purple-500 md:p-12 bg-gradient-to-r from-sky-500 to-indigo-500">
       <div className="flex flex-col bg-white rounded shadow-lg  w-96 p-6">
         <h3 className="text-center text-2xl font-bold mb-6 text-indigo-900">
           {formState[formMode].text}

@@ -56,7 +56,7 @@ export const AuthContextProvider = ({ children }) => {
           setLoading(false);
           auth.signOut();
         }
-      })
+      });
     }
   };
 

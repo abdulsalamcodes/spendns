@@ -100,9 +100,9 @@ const ItemCard = ({ detail, itemType }) => {
               onClick={() => {
                 update({ ...detail, settled: false }, debts, "debt");
               }}
-              variant="primary"
+              variant="danger"
             >
-              Mark As Uncleared.
+              Unclear
             </Button>
           ) : (
             <>
