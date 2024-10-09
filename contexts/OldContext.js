@@ -151,11 +151,11 @@ export const MainContextProvider = ({ children }) => {
           return a + b;
         }, 0);
 
-    // console.log(
-    //   "debts",
-    //   debts.map((el) => new Date(el.date?.toDate()).getMonth()),
-    //   monthFilter
-    // );
+    console.log(
+      "debts",
+      debts.map((el) => new Date(el.date.toDate()).getMonth()),
+      monthFilter
+    );
     setTotal((prev) => ({
       ...prev,
       incomes: sum(incomes),

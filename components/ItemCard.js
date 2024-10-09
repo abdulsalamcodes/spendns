@@ -1,14 +1,24 @@
-import moment from "moment";
 import React, { useContext, useState } from "react";
+import moment from "moment";
+import {
+  Calendar,
+  ArrowUpCircle,
+  ArrowDownCircle,
+  CircleDollarSign,
+  Eye,
+  Pencil,
+  MoreVertical,
+  Trash,
+} from "lucide-react";
 import MainContext from "../contexts/MainContext";
 import Form from "./Form";
-import { ArrowDown, ArrowUp, DebtIcon, DebtSvgIcon } from "./Icons";
-import Button from "./UI/Button";
 import Modal from "./UI/Modal";
 import ViewItemModal from "./ViewItemModal";
 
 const ItemCard = ({ detail, itemType }) => {
   const [activeModal, setActiveModal] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const {
     deleteExpense,
     deleteIncome,
@@ -18,13 +28,21 @@ const ItemCard = ({ detail, itemType }) => {
     debts,
     expenses,
   } = useContext(MainContext);
-  const closeAction = () => setActiveModal("");
-  const props = {
+
+  const closeAction = () => {
+    setActiveModal("");
+    setShowDropdown(false);
+  };
+
+  const typeConfig = {
     income: {
-      amount: " text-green-700",
-      sign: "+",
-      icon: <ArrowDown />,
+      icon: <ArrowDownCircle className="h-6 w-6 text-green-500" />,
+      colorClass: "text-green-600",
+      bgClass: "bg-green-50",
+      borderClass: "border-green-200",
+      badgeClass: "bg-green-100 text-green-700",
       deleteAction: deleteIncome,
+      items: incomes,
       form: (
         <Form
           closeAction={closeAction}
@@ -34,15 +52,15 @@ const ItemCard = ({ detail, itemType }) => {
           items={incomes}
         />
       ),
-      subText: `Created on: ${moment(detail?.date.toDate()).format(
-        "DD/MM/YYYY"
-      )}`,
     },
     expense: {
-      amount: `text-pink-400`,
-      sign: "-",
+      icon: <ArrowUpCircle className="h-6 w-6 text-rose-500" />,
+      colorClass: "text-rose-600",
+      bgClass: "bg-rose-50",
+      borderClass: "border-rose-200",
+      badgeClass: "bg-rose-100 text-rose-700",
       deleteAction: deleteExpense,
-      icon: <ArrowUp />,
+      items: expenses,
       form: (
         <Form
           closeAction={closeAction}
@@ -52,15 +70,15 @@ const ItemCard = ({ detail, itemType }) => {
           detail={detail}
         />
       ),
-      subText: `Created on: ${moment(detail?.date.toDate()).format(
-        "DD/MM/YYYY"
-      )}`,
     },
     debt: {
-      amount: `text-gray-500`,
-      sign: "",
+      icon: <CircleDollarSign className="h-6 w-6 text-blue-500" />,
+      colorClass: "text-blue-600",
+      bgClass: "bg-blue-50",
+      borderClass: "border-blue-200",
+      badgeClass: "bg-blue-100 text-blue-700",
       deleteAction: deleteDebt,
-      icon: <DebtSvgIcon />,
+      items: debts,
       form: (
         <Form
           closeAction={closeAction}
@@ -70,103 +88,131 @@ const ItemCard = ({ detail, itemType }) => {
           submitHandler={update}
         />
       ),
-      subText: `${detail.owedByMe ? "Owed To: " : "Owed By: "} ${
-        detail.personInvolved
-      }`,
     },
   };
 
-  const subText = () => {};
+  const config = typeConfig[itemType];
 
-  const Item = props[itemType];
+  const formatAmount = (amount) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+    }).format(amount);
+  };
+
   return (
     <>
-      <div className="mb-5 flex md:items-center sm:flex-row flex-col  justify-between text-white p-5 shadow-violet-100 bg-indigo-50 rounded-lg">
-        <div className="flex align-center gap-2 items-center">
-          <div className="h-12 w-12 text-indigo-700 bg-white rounded-full place-content-center grid">
-            {Item.icon}
-          </div>
-          <div>
-            <p className={`md:text-2xl text-xl font-bold ${Item.amount}`}>
-              {Item.sign} &#8358; {Number(detail?.amount).toLocaleString()}
-            </p>
-            <p className="text-sm text-indigo-600 capitalize">{Item.subText}</p>
-          </div>
-        </div>
+      <div
+        className={`mb-4 rounded-lg border ${config.borderClass} ${config.bgClass}`}
+      >
+        <div className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 rounded-full bg-white shadow-sm">
+                {config.icon}
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h3 className={`text-lg font-semibold ${config.colorClass}`}>
+                    {formatAmount(detail?.amount)}
+                  </h3>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${config.badgeClass}`}
+                  >
+                    {itemType}
+                  </span>
+                </div>
+                <div className="flex items-center mt-1 text-sm text-gray-500">
+                  <Calendar className="h-4 w-4 mr-1" />
+                  {moment(detail?.date.toDate()).format("DD/MM/YYYY")}
+                  {itemType === "debt" && detail.personInvolved && (
+                    <span className="ml-2 font-medium">
+                      • {detail.owedByMe ? "Owed to" : "Owed by"}:{" "}
+                      {detail.personInvolved}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
 
-        <div className="flex sm:mt-0 mt-5 ">
-          {detail.settled ? (
-            <Button
-              onClick={() => {
-                update({ ...detail, settled: false }, debts, "debt");
-              }}
-              variant="danger"
-            >
-              Unclear
-            </Button>
-          ) : (
-            <>
-              <button
-                onClick={() => setActiveModal("edit")}
-                className="text-sm mr-3 flex-1 justify-center flex p-3 font-bold bg-white rounded-md text-gray-900"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
+            <div className="flex items-center space-x-2">
+              {detail.settled ? (
+                <button
+                  onClick={() => {
+                    update({ ...detail, settled: false }, debts, "debt");
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-rose-500 bg-white border border-rose-200 rounded-md hover:bg-rose-50 transition-colors"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
-                Edit
-              </button>
-              <button
-                onClick={() => setActiveModal("view")}
-                className="text-sm p-3 flex-1 justify-center border-solid border-2 border-indigo-500 font-bold bg-white flex rounded-md font-bold text-gray-900"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-                  />
-                </svg>
-                View
-              </button>
-            </>
-          )}
+                  Unclear
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setActiveModal("view")}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors flex items-center"
+                  >
+                    <Eye className="h-4 w-4 mr-1" />
+                    View
+                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowDropdown(!showDropdown)}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors flex items-center"
+                    >
+                      <Pencil className="h-4 w-4 mr-1" />
+                      Edit
+                      <MoreVertical className="h-4 w-4 ml-1" />
+                    </button>
+
+                    {showDropdown && (
+                      <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                        <div className="py-1" role="menu">
+                          <button
+                            onClick={() => {
+                              setActiveModal("edit");
+                              setShowDropdown(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            role="menuitem"
+                          >
+                            <Pencil className="h-4 w-4 inline mr-2" />
+                            Edit Details
+                          </button>
+                          <button
+                            onClick={() => config.deleteAction(detail.id)}
+                            className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-gray-100"
+                            role="menuitem"
+                          >
+                            <Trash className="h-4 w-4 inline mr-2" />
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
       <Modal
-        closeAction={() => setActiveModal("")}
+        closeAction={closeAction}
         Component={
           <ViewItemModal
             onClose={closeAction}
-            deleteAction={Item.deleteAction}
+            deleteAction={config.deleteAction}
             detail={detail}
-            icon={Item.icon}
+            icon={config.icon}
             tag={itemType}
           />
         }
         isOpen={activeModal === "view"}
       />
       <Modal
-        closeAction={() => setActiveModal("")}
-        Component={Item.form}
+        closeAction={closeAction}
+        Component={config.form}
         isOpen={activeModal === "edit"}
       />
     </>

@@ -45,6 +45,7 @@ export const AuthContextProvider = ({ children }) => {
   const getCurrentUser = () => {
     setLoading(true);
     if (user) {
+      console.log("Current user already exists", user);
       setLoading(false);
       router.push("/");
     } else {
