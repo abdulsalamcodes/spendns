@@ -1,19 +1,16 @@
 import React, { useEffect } from "react";
 
 const Modal = ({ Component, isOpen, closeAction }) => {
-
-  
   useEffect(() => {
-    
     const bodyRef = document.body;
     if (isOpen) {
-      bodyRef.style = "overflow: hidden"
+      bodyRef.style = "overflow: hidden";
     } else {
-      bodyRef.style = "overflow: scroll"
+      bodyRef.style = "overflow: auto";
     }
 
-    return bodyRef.style = "overflow: scroll"
-  }, [isOpen])
+    return (bodyRef.style = "overflow: auto");
+  }, [isOpen]);
   return (
     <>
       <div
@@ -21,8 +18,11 @@ const Modal = ({ Component, isOpen, closeAction }) => {
         id="modal"
       >
         {isOpen && (
-          <div className="flex items-center justify-center min-h-screen py-2 text-center sm:block ">
-            <div className="fixed inset-0 transition-opacity" onClick={closeAction}>
+          <div className="flex items-center justify-center py-2 text-center sm:block ">
+            <div
+              className="fixed inset-0 transition-opacity"
+              onClick={closeAction}
+            >
               <div className="absolute inset-0 bg-gray-900 opacity-75" />
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" />

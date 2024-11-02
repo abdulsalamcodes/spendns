@@ -11,9 +11,9 @@ import {
   Trash,
 } from "lucide-react";
 import MainContext from "../contexts/MainContext";
-import Form from "./Form";
 import Modal from "./UI/Modal";
 import ViewItemModal from "./ViewItemModal";
+import Form from "./Form";
 
 const ItemCard = ({ detail, itemType }) => {
   const [activeModal, setActiveModal] = useState("");
@@ -124,7 +124,7 @@ const ItemCard = ({ detail, itemType }) => {
                 </div>
                 <div className="flex items-center mt-1 text-sm text-gray-500">
                   <Calendar className="h-4 w-4 mr-1" />
-                  {moment(detail?.date.toDate()).format("DD/MM/YYYY")}
+                  {/* {moment(detail?.date.toDate()).format("DD/MM/YYYY")} */}
                   {itemType === "debt" && detail.personInvolved && (
                     <span className="ml-2 font-medium">
                       • {detail.owedByMe ? "Owed to" : "Owed by"}:{" "}

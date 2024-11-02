@@ -5,10 +5,10 @@ import AuthContext from "../contexts/AuthContext";
 import Dropdown from "./Dropdown";
 import { PlusIcon, UserIcon } from "./Icons";
 import ItemCard from "./ItemCard";
-import MainContext from "../contexts/MainContext";
+import MainContext, { useMainContext } from "../contexts/MainContext";
 import Modal from "./UI/Modal";
-import Form from "./Form";
 import DebtChart from "./Charts.js/HomeChart";
+import Form from "./Form";
 
 const SectionHeader = ({ title, path }) => (
   <header className="flex align-center justify-between mb-4">
@@ -38,7 +38,7 @@ const SectionHeader = ({ title, path }) => (
 const Home = () => {
   const user = useContext(AuthContext).user;
   const { debts, total, addDebt, monthFilter, setMonthFilter } =
-    useContext(MainContext);
+    useMainContext();
   const [show, setShow] = useState(false);
 
   const months = [

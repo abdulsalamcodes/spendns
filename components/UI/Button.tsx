@@ -1,6 +1,14 @@
 import React from "react";
 
-const Button = ({ onClick, children, variant }) => {
+const Button = ({
+  onClick,
+  children,
+  variant,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+  variant: "base" | "primary" | "danger";
+}) => {
   const btnBaseStyle = "py-2 px-4 mx-1 capitalize";
   const btnStyleType = {
     base: "bg-gray-200 text-indigo-900 rounded-md hover:bg-gray-300 ",
