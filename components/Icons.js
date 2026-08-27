@@ -124,22 +124,29 @@ export const ExpenseIcon = () => (
   </svg>
 );
 
-export const PlusIcon = ({ size = 5 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className={`h-${size} w-${size}`}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M12 4v16m8-8H4"
-    />
-  </svg>
-);
+export const PlusIcon = ({ size = 5 }) => {
+  const sizeClasses = {
+    4: "h-4 w-4",
+    5: "h-5 w-5",
+    6: "h-6 w-6",
+  };
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={sizeClasses[size] || "h-5 w-5"}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 4v16m8-8H4"
+      />
+    </svg>
+  );
+};
 
 export const BackIcon = () => (
   <svg

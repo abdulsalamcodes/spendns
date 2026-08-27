@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
-import Container from "../../hoc/Container";
-import Modal from "../../components/UI/Modal";
 import { BackIcon, PlusIcon } from "../../components/Icons";
 import OverviewCard from "./OverviewCard";
-import MainContext from "../../contexts/MainContext";
 import AuthContext from "../../contexts/AuthContext";
+import MainContext from "../../contexts/MainContext";
 import ItemCard from "../ItemCard";
 import Form from "../Form";
+import Modal from "../UI/Modal";
+import { useContext, useState } from "react";
+import Container from "../../hoc/Container";
 
 const DebtPage = () => {
   const [open, setOpen] = useState(false);
@@ -35,10 +36,8 @@ const DebtPage = () => {
       <div className="p-5 max-w-6xl m-auto overflow-hidden">
         <div className="flex justify-between ">
           <div className="flex items-center gap-2">
-            <Link href="/">
-              <a className="cursor-pointer">
-                <BackIcon />
-              </a>
+            <Link href="/" className="cursor-pointer">
+              <BackIcon />
             </Link>
           </div>
           <button
@@ -59,12 +58,12 @@ const DebtPage = () => {
         <section className="sm:flex gap-4 flex-wrap mt-4 ">
           <OverviewCard
             title="OWED TO ME"
-            peopleCount={5}
+            peopleCount={debts.filter((d) => !d.owedByMe && !d.settled).length}
             totalPrice={total.debtOwed}
           />
           <OverviewCard
             title="OWED BY ME"
-            peopleCount={5}
+            peopleCount={debts.filter((d) => d.owedByMe && !d.settled).length}
             totalPrice={total.debtOwedByMe}
           />
         </section>
@@ -83,7 +82,7 @@ const DebtPage = () => {
             ) : !tabContents[activeTab].length ||
               tabContents[activeTab].length === 0 ? (
               <div className="text-sm text-gray-500 ">
-                List empty, you&apos;ve got no worries📿
+                List empty, you&apos;ve got no worries
               </div>
             ) : (
               tabContents[activeTab]?.map((debt) => (
@@ -94,7 +93,6 @@ const DebtPage = () => {
         </section>
       </div>
 
-      {/* Modals */}
       <Modal
         closeAction={() => setOpen(false)}
         Component={

@@ -1,11 +1,11 @@
 import React from "react";
-import Link from "next/link";
 import { NotificationIcon, SettingsIcon, LogoutIcon } from "./Icons";
 import { useRouter } from "next/router";
 import { auth } from "../firebase";
 
 const Dropdown = () => {
   const router = useRouter();
+
   const LinkItem = ({ icon, text, action }) => (
     <button
       onClick={action}
@@ -16,10 +16,15 @@ const Dropdown = () => {
     </button>
   );
 
-  const logOut = () => {
-    auth.signOut();
-    router.replace("/login");
+  const logOut = async () => {
+    try {
+      await auth.signOut();
+      router.replace("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
+
   return (
     <div className="relative cursor-pointer text-sm focus:outline-none group w-full">
       <div className="flex items-center justify-between px-4">
@@ -42,12 +47,12 @@ const Dropdown = () => {
         <LinkItem
           icon={<NotificationIcon />}
           text="Notifications"
-          action={() => console.log("notifications")}
+          action={() => {}}
         />
         <LinkItem
           icon={<SettingsIcon />}
           text="Settings"
-          action={() => console.log("settings")}
+          action={() => {}}
         />
         <LinkItem icon={<LogoutIcon />} text="Logout" action={logOut} />
       </div>

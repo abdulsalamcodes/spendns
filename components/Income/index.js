@@ -3,7 +3,6 @@ import React, { useContext, useState } from "react";
 import { BackIcon, PlusIcon } from "../../components/Icons";
 import AuthContext from "../../contexts/AuthContext";
 import MainContext from "../../contexts/MainContext";
-import IncomeChart from "../Charts.js/IncomeChart";
 import Modal from "../UI/Modal";
 import ItemCard from "../ItemCard";
 import OverviewCard from "../Debt/OverviewCard";
@@ -19,10 +18,8 @@ const IncomePage = () => {
       <div className="p-5 max-w-6xl m-auto overflow-hidden">
         <div className="flex justify-between ">
           <div className="flex items-center gap-2">
-            <Link href="/">
-              <a className="cursor-pointer">
-                <BackIcon />
-              </a>
+            <Link href="/" className="cursor-pointer">
+              <BackIcon />
             </Link>
           </div>
           <button
@@ -57,14 +54,14 @@ const IncomePage = () => {
             incomes
               .sort(
                 (a, b) =>
-                  parseFloat(b.date.seconds) - parseFloat(a.date.seconds)
+                  new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date)
               )
               .map((income) => (
                 <ItemCard key={income.id} detail={income} itemType="income" />
               ))
           ) : (
             <div className="text-sm text-gray-500 ">
-              Go earn some money💵💵, nothing here!
+              Go earn some money, nothing here!
             </div>
           )}
         </main>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import moment from "moment";
 import {
   Calendar,
@@ -18,6 +18,7 @@ import Form from "./Form";
 const ItemCard = ({ detail, itemType }) => {
   const [activeModal, setActiveModal] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
   const {
     deleteExpense,
@@ -28,6 +29,16 @@ const ItemCard = ({ detail, itemType }) => {
     debts,
     expenses,
   } = useContext(MainContext);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const closeAction = () => {
     setActiveModal("");
@@ -93,6 +104,8 @@ const ItemCard = ({ detail, itemType }) => {
 
   const config = typeConfig[itemType];
 
+  if (!config) return null;
+
   const formatAmount = (amount) => {
     return new Intl.NumberFormat("en-NG", {
       style: "currency",
@@ -124,10 +137,9 @@ const ItemCard = ({ detail, itemType }) => {
                 </div>
                 <div className="flex items-center mt-1 text-sm text-gray-500">
                   <Calendar className="h-4 w-4 mr-1" />
-                  {/* {moment(detail?.date.toDate()).format("DD/MM/YYYY")} */}
                   {itemType === "debt" && detail.personInvolved && (
                     <span className="ml-2 font-medium">
-                      • {detail.owedByMe ? "Owed to" : "Owed by"}:{" "}
+                      - {detail.owedByMe ? "Owed to" : "Owed by"}:{" "}
                       {detail.personInvolved}
                     </span>
                   )}
@@ -154,7 +166,7 @@ const ItemCard = ({ detail, itemType }) => {
                     <Eye className="h-4 w-4 mr-1" />
                     View
                   </button>
-                  <div className="relative">
+                  <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setShowDropdown(!showDropdown)}
                       className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors flex items-center"
@@ -179,7 +191,7 @@ const ItemCard = ({ detail, itemType }) => {
                             Edit Details
                           </button>
                           <button
-                            onClick={() => config.deleteAction(detail.id)}
+                            onClick={() => config.deleteAction(detail)}
                             className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-gray-100"
                             role="menuitem"
                           >

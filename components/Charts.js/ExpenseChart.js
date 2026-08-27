@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -7,9 +7,8 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-// import faker from 'faker';
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -20,38 +19,32 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
+const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top',
+      position: "top",
     },
     title: {
       display: true,
-      text: 'Chart.js Bar Chart',
+      text: "Expenses Over Time",
     },
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+const ExpenseChart = ({ data }) => {
+  const chartData = data || {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    datasets: [
+      {
+        label: "Expenses",
+        data: [0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: labels.map(() => [1,8,9,10,11,,3,4,5,6,7, 12]),
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-    {
-      label: 'Dataset 2',
-      data: labels.map(() => [1,,8,9,10,11,12 ,3,4,5,6,7]),
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    }],
+  return <Bar options={options} data={chartData} />;
 };
-
-const ExpenseChart = () => {
-  return <Bar options={options} data={data} />;
-}
 
 export default ExpenseChart;

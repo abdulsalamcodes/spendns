@@ -1,32 +1,32 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useRouter } from "next/router";
 import AuthContext from "../contexts/AuthContext";
 import Loader from "../components/UI/Loader";
 
-const WithAuth = (Component) => (props) => {
-  const { user, loading } = useContext(AuthContext);
-  const router = useRouter();
+const WithAuth = (Component) => {
+  const AuthenticatedComponent = (props) => {
+    const { user, loading } = useContext(AuthContext);
+    const router = useRouter();
 
-  // useEffect(() => {
-  //   if (!user && !loading) {
-  //     router.push("/login");
-  //   }
-  // }, [user, router]);
+    if (typeof window === "undefined") {
+      return <Loader />;
+    }
 
-  const renderPage = () => (
-    <>
-      <Component {...props} />
-    </>
-  );
+    if (loading) {
+      return <Loader />;
+    }
 
-  const renderLoader = () => <Loader />;
+    if (!user) {
+      router.replace("/login");
+      return <Loader />;
+    }
 
-  if (typeof window === "undefined" || loading) {
-    return renderLoader();
-  }
+    return <Component {...props} />;
+  };
 
-  return renderPage();
+  AuthenticatedComponent.displayName = `WithAuth(${Component.displayName || Component.name || "Component"})`;
+
+  return AuthenticatedComponent;
 };
 
 export default WithAuth;

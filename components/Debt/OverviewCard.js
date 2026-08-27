@@ -10,8 +10,10 @@ const OverviewCard = ({ title, entryCount, totalPrice }) => {
       <div className="flex items-center justify-between text-white text-xl md:text-xl mt-2">
         <p className="font-bold">{`Total ${title}:`}</p>
         <p>
-          &#8358; {Number(totalPrice).toLocaleString()}
-          <span className="text-md ml-2 bold">({entryCount} entries)</span>
+          &#8358; {Number(totalPrice || 0).toLocaleString()}
+          {entryCount !== undefined && (
+            <span className="text-md ml-2 bold">({entryCount} entries)</span>
+          )}
         </p>
       </div>
       <p className="text-xs text-red-50 mt-2 gap-1 flex items-center">

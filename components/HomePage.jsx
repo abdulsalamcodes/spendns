@@ -1,11 +1,10 @@
-/* eslint-disable react/no-unescaped-entities */
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import AuthContext from "../contexts/AuthContext";
 import Dropdown from "./Dropdown";
 import { PlusIcon, UserIcon } from "./Icons";
 import ItemCard from "./ItemCard";
-import MainContext, { useMainContext } from "../contexts/MainContext";
+import { useMainContext } from "../contexts/MainContext";
 import Modal from "./UI/Modal";
 import DebtChart from "./Charts.js/HomeChart";
 import Form from "./Form";
@@ -13,31 +12,29 @@ import Form from "./Form";
 const SectionHeader = ({ title, path }) => (
   <header className="flex align-center justify-between mb-4">
     <h4 className="text-gray-700">{title}</h4>
-    <Link href={path}>
-      <a className="text-sm text-indigo-700 flex items-center">
-        <span className="mr-2 underline">See All</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M13 5l7 7-7 7M5 5l7 7-7 7"
-          />
-        </svg>
-      </a>
+    <Link href={path} className="text-sm text-indigo-700 flex items-center">
+      <span className="mr-2 underline">See All</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M13 5l7 7-7 7M5 5l7 7-7 7"
+        />
+      </svg>
     </Link>
   </header>
 );
 
 const Home = () => {
   const user = useContext(AuthContext).user;
-  const { debts, total, addDebt, monthFilter, setMonthFilter } =
+  const { debts, total, addDebt, monthFilter } =
     useMainContext();
   const [show, setShow] = useState(false);
 
@@ -54,7 +51,7 @@ const Home = () => {
     "October",
     "November",
     "December",
-  ].slice(0, new Date().getMonth() + 1);
+  ];
 
   return (
     <div className="max-w-6xl m-auto relative">
@@ -77,7 +74,7 @@ const Home = () => {
               />
             </svg>
           </div>
-          <h1 className="font-bold text-xl text-indigo-600">DebtTracker</h1>
+          <h1 className="font-bold text-xl text-indigo-600">Spendns</h1>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -100,7 +97,7 @@ const Home = () => {
               <UserIcon />
             </div>
             <div>
-              <p className="text-xs text-indigo-800">Welcome back👋🏻</p>
+              <p className="text-xs text-indigo-800">Welcome back</p>
               <p className="text-indigo-500 text-lg capitalize">
                 {user?.username}
               </p>
@@ -184,7 +181,7 @@ const Home = () => {
                 ))
             ) : (
               <div className="text-sm text-gray-500 ">
-                You don't owe anyone money - great job!
+                You don&apos;t owe anyone money - great job!
               </div>
             )}
           </div>

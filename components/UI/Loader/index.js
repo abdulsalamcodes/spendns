@@ -1,13 +1,12 @@
 import React from "react";
-import styles from "./Loader.module.css";
 
 const Loader = () => {
   return (
-    <div
-      className="flex items-center justify-center  over bg-purple-500
-        bg-gradient-to-r from-sky-500 to-indigo-500"
-    >
-      <div className={styles.loader}>Loading...</div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-sky-500 to-indigo-500">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
+        <p className="text-white text-sm">Loading...</p>
+      </div>
     </div>
   );
 };

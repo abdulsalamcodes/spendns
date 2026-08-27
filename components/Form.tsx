@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import useFormFields from "../hooks/useFormFields";
 import Button from "./UI/Button";
@@ -9,10 +9,12 @@ interface FormFields extends Record<string, any> {
   id: string;
   note: string;
   amount: number;
-  date: Date;
+  date: string;
   personInvolved?: string;
   settled?: boolean;
   owedByMe?: boolean;
+  category?: string;
+  dueDate?: string;
 }
 
 type FormType = "income" | "expense" | "debt";
@@ -21,25 +23,15 @@ interface FormProps {
   closeAction: () => void;
   submitHandler: (
     formData: FormFields,
-    items: FormFields[],
-    type: FormType
+    items?: FormFields[],
+    type?: FormType
   ) => void;
   type: FormType;
   all?: boolean;
   setType?: (type: FormType) => void;
   detail?: FormFields;
-  items: FormFields[];
+  items?: FormFields[];
 }
-
-const INITIAL_FORM_STATE: FormFields = {
-  id: uuidv4(),
-  note: "",
-  amount: 0,
-  date: new Date(),
-  personInvolved: "",
-  settled: false,
-  owedByMe: false,
-};
 
 const Form = ({
   closeAction,
@@ -52,21 +44,42 @@ const Form = ({
 }: FormProps) => {
   const [owedByMe, setOwedByMe] = useState(detail?.owedByMe ?? false);
 
+  const defaultValues: FormFields = {
+    id: uuidv4(),
+    note: "",
+    amount: 0,
+    date: new Date().toISOString().split("T")[0],
+    personInvolved: "",
+    settled: false,
+    owedByMe: false,
+    category: "",
+    dueDate: "",
+  };
+
   const { formFields, createChangeHandler } = useFormFields<FormFields>(
-    detail || INITIAL_FORM_STATE
+    detail || defaultValues
   );
 
   const handleSubmit = () => {
-    const submissionData =
-      type === "debt"
-        ? {
-            ...formFields,
-            owedByMe,
-            settled: false,
-          }
-        : formFields;
+    if (!formFields.amount || formFields.amount <= 0) {
+      return;
+    }
 
-    submitHandler(submissionData, items, type);
+    if (type === "debt" && items) {
+      submitHandler(
+        {
+          ...formFields,
+          owedByMe,
+          settled: detail?.settled ?? false,
+        },
+        items,
+        type
+      );
+    } else if (items) {
+      submitHandler(formFields, items, type);
+    } else {
+      submitHandler(formFields);
+    }
     closeAction();
   };
 
@@ -144,12 +157,19 @@ const Form = ({
           type="number"
           title="Amount"
           value={formFields.amount}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             createChangeHandler("amount")(e.target.value)
           }
           placeholder="Enter the amount"
           min={0}
           step={0.01}
+        />
+
+        <InputField
+          type="date"
+          title="Date"
+          value={formFields.date}
+          onChange={createChangeHandler("date")}
         />
 
         <InputField
@@ -162,10 +182,10 @@ const Form = ({
 
       <footer className="px-4 py-3 text-right text-sm">
         <Button variant="base" onClick={closeAction}>
-          <i className="fas fa-times" /> Cancel
+          Cancel
         </Button>
         <Button variant="primary" onClick={handleSubmit}>
-          <i className="fas fa-plus" /> {`${detail ? "Update" : "Add"} ${type}`}
+          {`${detail ? "Update" : "Add"} ${type}`}
         </Button>
       </footer>
     </section>

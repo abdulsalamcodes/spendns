@@ -57,7 +57,7 @@ const BarOptions = {
       beginAtZero: true,
       title: {
         display: true,
-        text: "Amount (₦)",
+        text: "Amount",
       },
     },
   },
@@ -66,7 +66,6 @@ const BarOptions = {
 const DebtChart = () => {
   const { debts, total } = useContext(MainContext);
 
-  // Process debts by category
   const categorizedDebts = debts.reduce((acc, debt) => {
     const category = debt.category || "Uncategorized";
     if (!acc[category]) {
@@ -83,15 +82,14 @@ const DebtChart = () => {
     return acc;
   }, {});
 
-  // Prepare data for doughnut chart
   const doughnutData = {
     labels: ["Owed To Me", "Owed By Me"],
     datasets: [
       {
         data: [total.debtOwed, total.debtOwedByMe],
         backgroundColor: [
-          "rgba(75, 192, 192, 0.2)", // Green for money owed to you
-          "rgba(255, 99, 132, 0.2)", // Red for money you owe
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(255, 99, 132, 0.2)",
         ],
         borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
         borderWidth: 1,
@@ -99,7 +97,6 @@ const DebtChart = () => {
     ],
   };
 
-  // Get upcoming debts due in the next 30 days
   const today = new Date();
   const thirtyDaysFromNow = new Date(
     today.getTime() + 30 * 24 * 60 * 60 * 1000
@@ -107,11 +104,12 @@ const DebtChart = () => {
 
   const upcomingDebts = debts
     .filter((debt) => {
+      if (!debt.dueDate) return false;
       const dueDate = new Date(debt.dueDate);
       return dueDate >= today && dueDate <= thirtyDaysFromNow;
     })
     .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-    .slice(0, 5); // Show only the next 5 upcoming debts
+    .slice(0, 5);
 
   const barData = {
     labels: upcomingDebts.map((debt) => {
@@ -142,22 +140,24 @@ const DebtChart = () => {
           <Bar data={barData} options={BarOptions} />
         </div>
       )}
-      <div className="mt-4">
-        <h3 className="text-sm font-semibold mb-2">Debt by Category</h3>
-        <div className="grid grid-cols-2 gap-2">
-          {Object.entries(categorizedDebts).map(([category, amounts]) => (
-            <div key={category} className="text-xs">
-              <p className="font-medium">{category}</p>
-              <p className="text-green-600">
-                Owed: ₦{amounts.owed.toLocaleString()}
-              </p>
-              <p className="text-red-600">
-                Owing: ₦{amounts.owedByMe.toLocaleString()}
-              </p>
-            </div>
-          ))}
+      {Object.keys(categorizedDebts).length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-sm font-semibold mb-2">Debt by Category</h3>
+          <div className="grid grid-cols-2 gap-2">
+            {Object.entries(categorizedDebts).map(([category, amounts]) => (
+              <div key={category} className="text-xs">
+                <p className="font-medium">{category}</p>
+                <p className="text-green-600">
+                  Owed: {Number(amounts.owed).toLocaleString()}
+                </p>
+                <p className="text-red-600">
+                  Owing: {Number(amounts.owedByMe).toLocaleString()}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

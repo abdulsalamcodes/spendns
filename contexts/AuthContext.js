@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toast";
 
 import {
@@ -24,98 +24,91 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const fetchUser = async (currentUser) => {
-    const q = query(
-      collection(db, "users"),
-      where("email", "==", currentUser?.email)
-    );
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.docs) {
-      querySnapshot.forEach((doc) => {
-        setUser({ ...doc.data(), id: doc.id });
-        router.push("/");
-      });
-    }
-    setLoading(false);
-  };
-
-  const getCurrentUser = () => {
-    setLoading(true);
-    if (user) {
-      console.log("Current user already exists", user);
+  const fetchUser = useCallback(async (currentUser) => {
+    try {
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", currentUser?.email)
+      );
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        setUser({ ...userDoc.data(), id: userDoc.id });
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      toast.error("Failed to load user data.");
+    } finally {
       setLoading(false);
-      router.push("/");
-    } else {
-      onAuthStateChanged(auth, (authenticatedUser) => {
-        if (authenticatedUser) {
-          fetchUser(authenticatedUser);
-        } else {
-          setUser(null);
-          setLoading(false);
-          auth.signOut();
-        }
-      });
     }
-  };
+  }, []);
 
   const updateUsername = (displayName) =>
     updateProfile(auth.currentUser, { displayName });
 
-  const handleLogin = (email, password) => {
-    setLoading(true);
-    setPersistence(auth, browserLocalPersistence)
-      .then(() => {
-        return signInWithEmailAndPassword(auth, email, password).then(() => {
-          getCurrentUser();
-        });
-      })
-      .catch((error) => {
-        setLoading(false);
-        toast.error(error.message);
-      });
-  };
-
-  const handleSignUp = async (username, email, password, photoUrl = "") => {
+  const handleLogin = useCallback(async (email, password) => {
     setLoading(true);
     try {
-      setPersistence(auth, browserLocalPersistence);
+      await setPersistence(auth, browserLocalPersistence);
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      await fetchUser(response.user);
+      router.push("/");
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.message);
+    }
+  }, [fetchUser, router]);
+
+  const handleSignUp = useCallback(async (username, email, password, photoUrl = "") => {
+    setLoading(true);
+    try {
+      await setPersistence(auth, browserLocalPersistence);
       const response = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
       const storedUser = response.user;
-      if (storedUser) {
-        setLoading(true);
-        await updateUsername(username);
-        const userData = {
-          uid: storedUser.uid,
-          username: username,
-          email: email,
-          photoUrl: photoUrl,
-          totalDebt: 0,
-          totalIncome: 0,
-          totalExpenses: 0,
-          debts: [],
-          expenses: [],
-          incomes: [],
-        };
-        await setDoc(doc(db, "users", storedUser.uid), userData);
-        fetchUser(storedUser);
-      }
+      await updateUsername(username);
+      const userData = {
+        uid: storedUser.uid,
+        username: username,
+        email: email,
+        photoUrl: photoUrl,
+        totalDebt: 0,
+        totalDebtOwed: 0,
+        totalDebtOwedByMe: 0,
+        totalIncome: 0,
+        totalExpenses: 0,
+        debts: [],
+        expenses: [],
+        incomes: [],
+      };
+      await setDoc(doc(db, "users", storedUser.uid), userData);
+      await fetchUser(storedUser);
+      router.push("/");
     } catch (e) {
       setLoading(false);
-      console.error("Error adding document: ", e);
+      console.error("Error during signup: ", e);
       toast.error(e.message);
     }
-  };
+  }, [fetchUser, updateUsername, router]);
 
   useEffect(() => {
-    getCurrentUser();
-  }, []);
+    const unsubscribe = onAuthStateChanged(auth, (authenticatedUser) => {
+      if (authenticatedUser) {
+        fetchUser(authenticatedUser);
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [fetchUser]);
 
   const value = {
     user,

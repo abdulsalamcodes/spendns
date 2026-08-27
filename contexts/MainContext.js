@@ -6,7 +6,7 @@ import {
   onSnapshot,
   updateDoc,
 } from "firebase/firestore";
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { toast } from "react-toast";
 import { db } from "../firebase";
 import AuthContext from "./AuthContext";
@@ -16,96 +16,150 @@ const MainContext = createContext();
 export const MainContextProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [debts, setDebts] = useState([]);
+  const [incomes, setIncomes] = useState([]);
+  const [expenses, setExpenses] = useState([]);
   const [loadingData, setLoading] = useState(false);
   const [monthFilter, setMonthFilter] = useState(new Date().getMonth());
   const [total, setTotal] = useState({
     debtOwedByMe: 0,
     debtOwed: 0,
+    incomes: 0,
+    expenses: 0,
   });
 
-  // Helper function to handle Firebase errors
-  const handleFirebaseError = (error) => {
+  const handleFirebaseError = useCallback((error) => {
     console.error("Firebase error:", error);
     toast.error(error.message || "An error occurred.");
-  };
+  }, []);
 
-  // Helper function to get user reference
-  const getUserRef = () => {
-    console.log("user", user);
+  const getUserRef = useCallback(() => {
     if (!user?.uid) {
-      throw new Error("User not authenticated");
+      return null;
     }
     return doc(db, "users", user.uid);
-  };
+  }, [user]);
 
   // CREATE ITEMS
-  const addDebt = async (debt) => {
+  const addDebt = useCallback(async (debt) => {
     try {
-      // console.log("Debt", debt);
-      // if (!debt || typeof debt.amount !== "number") {
-      //   throw new Error("Invalid debt data");
-      // }
-
       const userRef = getUserRef();
+      if (!userRef) throw new Error("User not authenticated");
       await updateDoc(userRef, {
         debts: arrayUnion({ ...debt, createdAt: new Date().toISOString() }),
-        totalDebtOwed: debt.owedByMe ? increment(0) : increment(debt.amount),
-        totalDebtOwedByMe: debt.owedByMe
-          ? increment(debt.amount)
-          : increment(0),
+        ...(debt.owedByMe
+          ? { totalDebtOwedByMe: increment(debt.amount) }
+          : { totalDebtOwed: increment(debt.amount) }),
       });
-
       toast.success("Debt added successfully!");
     } catch (error) {
       handleFirebaseError(error);
     }
-  };
+  }, [getUserRef, handleFirebaseError]);
+
+  const addIncome = useCallback(async (income) => {
+    try {
+      const userRef = getUserRef();
+      if (!userRef) throw new Error("User not authenticated");
+      await updateDoc(userRef, {
+        incomes: arrayUnion({ ...income, createdAt: new Date().toISOString() }),
+        totalIncome: increment(income.amount),
+      });
+      toast.success("Income added successfully!");
+    } catch (error) {
+      handleFirebaseError(error);
+    }
+  }, [getUserRef, handleFirebaseError]);
+
+  const addExpense = useCallback(async (expense) => {
+    try {
+      const userRef = getUserRef();
+      if (!userRef) throw new Error("User not authenticated");
+      await updateDoc(userRef, {
+        expenses: arrayUnion({ ...expense, createdAt: new Date().toISOString() }),
+        totalExpenses: increment(expense.amount),
+      });
+      toast.success("Expense added successfully!");
+    } catch (error) {
+      handleFirebaseError(error);
+    }
+  }, [getUserRef, handleFirebaseError]);
 
   // DELETE ITEMS
-  const deleteDebt = async (debt) => {
+  const deleteDebt = useCallback(async (debt) => {
     try {
-      if (!debt?.id) {
-        throw new Error("Invalid debt data");
-      }
-
+      if (!debt?.id) throw new Error("Invalid debt data");
       const userRef = getUserRef();
+      if (!userRef) throw new Error("User not authenticated");
       await updateDoc(userRef, {
         debts: arrayRemove(debt),
-        totalDebtOwed: debt.owedByMe ? increment(0) : increment(-debt.amount),
-        totalDebtOwedByMe: debt.owedByMe
-          ? increment(-debt.amount)
-          : increment(0),
+        ...(debt.owedByMe
+          ? { totalDebtOwedByMe: increment(-debt.amount) }
+          : { totalDebtOwed: increment(-debt.amount) }),
       });
-
       toast.success("Debt deleted successfully!");
     } catch (error) {
       handleFirebaseError(error);
     }
-  };
+  }, [getUserRef, handleFirebaseError]);
+
+  const deleteIncome = useCallback(async (income) => {
+    try {
+      if (!income?.id) throw new Error("Invalid income data");
+      const userRef = getUserRef();
+      if (!userRef) throw new Error("User not authenticated");
+      await updateDoc(userRef, {
+        incomes: arrayRemove(income),
+        totalIncome: increment(-income.amount),
+      });
+      toast.success("Income deleted successfully!");
+    } catch (error) {
+      handleFirebaseError(error);
+    }
+  }, [getUserRef, handleFirebaseError]);
+
+  const deleteExpense = useCallback(async (expense) => {
+    try {
+      if (!expense?.id) throw new Error("Invalid expense data");
+      const userRef = getUserRef();
+      if (!userRef) throw new Error("User not authenticated");
+      await updateDoc(userRef, {
+        expenses: arrayRemove(expense),
+        totalExpenses: increment(-expense.amount),
+      });
+      toast.success("Expense deleted successfully!");
+    } catch (error) {
+      handleFirebaseError(error);
+    }
+  }, [getUserRef, handleFirebaseError]);
 
   // UPDATE ITEM
-  const update = async (item, array, field) => {
+  const update = useCallback(async (item, array, field) => {
     try {
       if (!item?.id || !Array.isArray(array) || !field) {
         throw new Error("Invalid update parameters");
       }
-
       const newArray = array.map((el) => (el.id === item.id ? item : el));
       const userRef = getUserRef();
+      if (!userRef) throw new Error("User not authenticated");
 
-      const updateFields = {
-        [field === "debt" ? "debts" : field]: newArray,
-        updatedAt: new Date().toISOString(),
+      const fieldMap = {
+        debt: "debts",
+        income: "incomes",
+        expense: "expenses",
       };
+      const firestoreField = fieldMap[field] || field;
 
-      await updateDoc(userRef, updateFields);
+      await updateDoc(userRef, {
+        [firestoreField]: newArray,
+        updatedAt: new Date().toISOString(),
+      });
       toast.success("Updated successfully!");
     } catch (error) {
       handleFirebaseError(error);
     }
-  };
+  }, [getUserRef, handleFirebaseError]);
 
-  // Calculate totals when debts change
+  // Calculate totals when data changes
   useEffect(() => {
     const calculateSum = (items) => {
       if (!Array.isArray(items) || items.length === 0) return 0;
@@ -113,22 +167,31 @@ export const MainContextProvider = ({ children }) => {
     };
 
     const filteredDebts = debts.filter((debt) => {
-      const debtMonth = new Date(debt.createdAt).getMonth();
+      const debtDate = new Date(debt.createdAt || debt.date);
+      const debtMonth = debtDate.getMonth();
       return debtMonth === monthFilter && !debt.settled;
     });
 
     setTotal({
       debtOwed: calculateSum(filteredDebts.filter((debt) => !debt.owedByMe)),
       debtOwedByMe: calculateSum(filteredDebts.filter((debt) => debt.owedByMe)),
+      incomes: calculateSum(incomes.filter((inc) => {
+        const incDate = new Date(inc.createdAt || inc.date);
+        return incDate.getMonth() === monthFilter;
+      })),
+      expenses: calculateSum(expenses.filter((exp) => {
+        const expDate = new Date(exp.createdAt || exp.date);
+        return expDate.getMonth() === monthFilter;
+      })),
     });
-  }, [debts, monthFilter]);
+  }, [debts, incomes, expenses, monthFilter]);
 
   // Subscribe to user data changes
   useEffect(() => {
     if (!user?.uid) return;
 
     setLoading(true);
-    const userRef = getUserRef();
+    const userRef = doc(db, "users", user.uid);
 
     const unsubscribe = onSnapshot(
       userRef,
@@ -136,6 +199,8 @@ export const MainContextProvider = ({ children }) => {
         if (docSnapshot.exists()) {
           const userData = docSnapshot.data();
           setDebts(userData.debts || []);
+          setIncomes(userData.incomes || []);
+          setExpenses(userData.expenses || []);
         }
         setLoading(false);
       },
@@ -146,22 +211,29 @@ export const MainContextProvider = ({ children }) => {
     );
 
     return () => unsubscribe();
-  }, [user]);
+  }, [user, handleFirebaseError]);
 
-  // Memoize context value to prevent unnecessary renders
   const contextValue = useMemo(
     () => ({
       debts,
       setDebts,
+      incomes,
+      setIncomes,
+      expenses,
+      setExpenses,
       loadingData,
       addDebt,
+      addIncome,
+      addExpense,
       total,
       deleteDebt,
+      deleteIncome,
+      deleteExpense,
       update,
       setMonthFilter,
       monthFilter,
     }),
-    [debts, loadingData, total, monthFilter]
+    [debts, incomes, expenses, loadingData, total, monthFilter, addDebt, addIncome, addExpense, deleteDebt, deleteIncome, deleteExpense, update]
   );
 
   return (
@@ -169,7 +241,6 @@ export const MainContextProvider = ({ children }) => {
   );
 };
 
-// Custom hook for using the context
 export const useMainContext = () => {
   const context = useContext(MainContext);
   if (context === undefined) {
