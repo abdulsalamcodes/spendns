@@ -18,14 +18,8 @@ export const MainContextProvider = ({ children }) => {
   const [debts, setDebts] = useState([]);
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
-  const [loadingData, setLoading] = useState(false);
+  const [loadingData, setLoading] = useState(true);
   const [monthFilter, setMonthFilter] = useState(new Date().getMonth());
-  const [total, setTotal] = useState({
-    debtOwedByMe: 0,
-    debtOwed: 0,
-    incomes: 0,
-    expenses: 0,
-  });
 
   const handleFirebaseError = useCallback((error) => {
     console.error("Firebase error:", error);
@@ -159,38 +153,34 @@ export const MainContextProvider = ({ children }) => {
     }
   }, [getUserRef, handleFirebaseError]);
 
-  // Calculate totals when data changes
-  useEffect(() => {
+  // Derived totals for the current month's filter (computed during render)
+  const total = useMemo(() => {
     const calculateSum = (items) => {
       if (!Array.isArray(items) || items.length === 0) return 0;
       return items.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
     };
 
-    const filteredDebts = debts.filter((debt) => {
-      const debtDate = new Date(debt.createdAt || debt.date);
-      const debtMonth = debtDate.getMonth();
-      return debtMonth === monthFilter && !debt.settled;
-    });
+    const belongsToMonth = (item) => {
+      const itemDate = new Date(item.createdAt || item.date);
+      return itemDate.getMonth() === monthFilter;
+    };
 
-    setTotal({
+    const filteredDebts = debts.filter(
+      (debt) => belongsToMonth(debt) && !debt.settled
+    );
+
+    return {
       debtOwed: calculateSum(filteredDebts.filter((debt) => !debt.owedByMe)),
       debtOwedByMe: calculateSum(filteredDebts.filter((debt) => debt.owedByMe)),
-      incomes: calculateSum(incomes.filter((inc) => {
-        const incDate = new Date(inc.createdAt || inc.date);
-        return incDate.getMonth() === monthFilter;
-      })),
-      expenses: calculateSum(expenses.filter((exp) => {
-        const expDate = new Date(exp.createdAt || exp.date);
-        return expDate.getMonth() === monthFilter;
-      })),
-    });
+      incomes: calculateSum(incomes.filter(belongsToMonth)),
+      expenses: calculateSum(expenses.filter(belongsToMonth)),
+    };
   }, [debts, incomes, expenses, monthFilter]);
 
   // Subscribe to user data changes
   useEffect(() => {
     if (!user?.uid) return;
 
-    setLoading(true);
     const userRef = doc(db, "users", user.uid);
 
     const unsubscribe = onSnapshot(

@@ -33,6 +33,48 @@ interface FormProps {
   items?: FormFields[];
 }
 
+const TypeSelector = ({ type, onSelect }: { type: FormType; onSelect?: (type: FormType) => void }) => (
+  <div className="flex items-center gap-2 mt-4">
+    {(["income", "expense", "debt"] as const).map((buttonType) => (
+      <Button
+        key={buttonType}
+        onClick={() => onSelect?.(buttonType)}
+        variant={type === buttonType ? "primary" : "base"}
+      >
+        {buttonType.charAt(0).toUpperCase() + buttonType.slice(1)}
+      </Button>
+    ))}
+  </div>
+);
+
+const OwedByMeToggle = ({ owedByMe, onToggle }: { owedByMe: boolean; onToggle: () => void }) => (
+  <div className="mt-4 mb-2 flex items-center max-w-xs w-11/12">
+    <span className="font-semibold text-indigo-800 text-sm mr-2">
+      Owed To Me:
+    </span>
+    <button
+      type="button"
+      className={`md:w-14 md:h-8 w-12 flex items-center ${
+        owedByMe ? "bg-indigo-200" : "bg-gray-200"
+      } rounded-full p-1 cursor-pointer transition-colors duration-200`}
+      onClick={onToggle}
+      aria-pressed={owedByMe}
+      aria-label="Toggle owed by me"
+    >
+      <div
+        className={`
+          md:w-6 md:h-6 h-5 w-5 rounded-full shadow-md
+          transform duration-300 ease-in-out
+          ${owedByMe ? "translate-x-6 bg-indigo-500" : "bg-gray-200"}
+        `}
+      />
+    </button>
+    <span className="font-semibold text-indigo-800 text-sm ml-2">
+      Owed By Me:
+    </span>
+  </div>
+);
+
 const Form = ({
   closeAction,
   submitHandler,
@@ -65,65 +107,18 @@ const Form = ({
       return;
     }
 
-    if (type === "debt" && items) {
-      submitHandler(
-        {
-          ...formFields,
-          owedByMe,
-          settled: detail?.settled ?? false,
-        },
-        items,
-        type
-      );
-    } else if (items) {
-      submitHandler(formFields, items, type);
+    let submissionData = formFields;
+    if (type === "debt") {
+      submissionData = { ...formFields, owedByMe, settled: detail?.settled ?? false };
+    }
+
+    if (items) {
+      submitHandler(submissionData, items, type);
     } else {
-      submitHandler(formFields);
+      submitHandler(submissionData);
     }
     closeAction();
   };
-
-  const TypeSelector = () => (
-    <div className="flex items-center gap-2 mt-4">
-      {(["income", "expense", "debt"] as const).map((buttonType) => (
-        <Button
-          key={buttonType}
-          onClick={() => setType?.(buttonType)}
-          variant={type === buttonType ? "primary" : "base"}
-        >
-          {buttonType.charAt(0).toUpperCase() + buttonType.slice(1)}
-        </Button>
-      ))}
-    </div>
-  );
-
-  const OwedByMeToggle = () => (
-    <div className="mt-4 mb-2 flex items-center max-w-xs w-11/12">
-      <span className="font-semibold text-indigo-800 text-sm mr-2">
-        Owed To Me:
-      </span>
-      <button
-        type="button"
-        className={`md:w-14 md:h-8 w-12 flex items-center ${
-          owedByMe ? "bg-indigo-200" : "bg-gray-200"
-        } rounded-full p-1 cursor-pointer transition-colors duration-200`}
-        onClick={() => setOwedByMe(!owedByMe)}
-        aria-pressed={owedByMe}
-        aria-label="Toggle owed by me"
-      >
-        <div
-          className={`
-            md:w-6 md:h-6 h-5 w-5 rounded-full shadow-md
-            transform duration-300 ease-in-out
-            ${owedByMe ? "translate-x-6 bg-indigo-500" : "bg-gray-200"}
-          `}
-        />
-      </button>
-      <span className="font-semibold text-indigo-800 text-sm ml-2">
-        Owed By Me:
-      </span>
-    </div>
-  );
 
   return (
     <section
@@ -138,12 +133,12 @@ const Form = ({
         </h3>
       </header>
 
-      {all && <TypeSelector />}
+      {all && <TypeSelector type={type} onSelect={setType} />}
 
       <main className="bg-white pt-5 pb-4 p-3">
         {type === "debt" && (
           <>
-            <OwedByMeToggle />
+            <OwedByMeToggle owedByMe={owedByMe} onToggle={() => setOwedByMe(!owedByMe)} />
             <InputField
               title={owedByMe ? "Owed To:" : "Owed By:"}
               value={formFields.personInvolved}

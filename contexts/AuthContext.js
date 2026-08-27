@@ -46,8 +46,10 @@ export const AuthContextProvider = ({ children }) => {
     }
   }, []);
 
-  const updateUsername = (displayName) =>
-    updateProfile(auth.currentUser, { displayName });
+  const updateUsername = useCallback(
+    (displayName) => updateProfile(auth.currentUser, { displayName }),
+    []
+  );
 
   const handleLogin = useCallback(async (email, password) => {
     setLoading(true);

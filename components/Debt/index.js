@@ -10,6 +10,17 @@ import Modal from "../UI/Modal";
 import { useContext, useState } from "react";
 import Container from "../../hoc/Container";
 
+const TabButton = ({ text, id, isActive, onSelect }) => (
+  <button
+    onClick={() => onSelect(id)}
+    className={`${
+      isActive && "bg-indigo-500 text-white px-4"
+    } items-center flex text-sm cursor-pointer py-2 border-b-1  hover:border-b-violet-600`}
+  >
+    {text}
+  </button>
+);
+
 const DebtPage = () => {
   const [open, setOpen] = useState(false);
   const { debts, loadingData, total, addDebt } = useContext(MainContext);
@@ -21,16 +32,6 @@ const DebtPage = () => {
     owing: debts.filter((debt) => debt.owedByMe),
     cleared: debts.filter((debt) => debt.settled),
   };
-  const TabButton = ({ text, id }) => (
-    <button
-      onClick={() => setActiveTab(id)}
-      className={`${
-        activeTab === id && "bg-indigo-500 text-white px-4"
-      } items-center flex text-sm cursor-pointer py-2 border-b-1  hover:border-b-violet-600`}
-    >
-      {text}
-    </button>
-  );
   return (
     <Container>
       <div className="p-5 max-w-6xl m-auto overflow-hidden">
@@ -70,10 +71,10 @@ const DebtPage = () => {
 
         <section className="mt-10">
           <header className="border-b-2 flex items-end gap-5 w-full mb-3 ">
-            <TabButton text="All" id="all" />
-            <TabButton text="Owe To Me" id="oweMe" />
-            <TabButton text="Owe By Me" id="owing" />
-            <TabButton text="Cleared Debt" id="cleared" />
+            <TabButton text="All" id="all" isActive={activeTab === "all"} onSelect={setActiveTab} />
+            <TabButton text="Owe To Me" id="oweMe" isActive={activeTab === "oweMe"} onSelect={setActiveTab} />
+            <TabButton text="Owe By Me" id="owing" isActive={activeTab === "owing"} onSelect={setActiveTab} />
+            <TabButton text="Cleared Debt" id="cleared" isActive={activeTab === "cleared"} onSelect={setActiveTab} />
           </header>
 
           <main className=" gap-4">

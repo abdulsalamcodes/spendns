@@ -3,18 +3,18 @@ import { NotificationIcon, SettingsIcon, LogoutIcon } from "./Icons";
 import { useRouter } from "next/router";
 import { auth } from "../firebase";
 
+const DropdownItem = ({ icon, text, action }) => (
+  <button
+    onClick={action}
+    className="w-full px-3 py-2 text-left hover:bg-gray-100 flex items-center gap-1"
+  >
+    {icon}
+    {text}
+  </button>
+);
+
 const Dropdown = () => {
   const router = useRouter();
-
-  const LinkItem = ({ icon, text, action }) => (
-    <button
-      onClick={action}
-      className="w-full px-3 py-2 text-left hover:bg-gray-100 flex items-center gap-1"
-    >
-      {icon}
-      {text}
-    </button>
-  );
 
   const logOut = async () => {
     try {
@@ -44,17 +44,9 @@ const Dropdown = () => {
         </svg>
       </div>
       <div className="absolute z-10 right-8 flex-col rounded-md items-start hidden w-32 pb-1 bg-white shadow-lg group-hover:flex">
-        <LinkItem
-          icon={<NotificationIcon />}
-          text="Notifications"
-          action={() => {}}
-        />
-        <LinkItem
-          icon={<SettingsIcon />}
-          text="Settings"
-          action={() => {}}
-        />
-        <LinkItem icon={<LogoutIcon />} text="Logout" action={logOut} />
+        <DropdownItem icon={<NotificationIcon />} text="Notifications" action={() => {}} />
+        <DropdownItem icon={<SettingsIcon />} text="Settings" action={() => {}} />
+        <DropdownItem icon={<LogoutIcon />} text="Logout" action={logOut} />
       </div>
     </div>
   );
